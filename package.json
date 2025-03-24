@@ -1,0 +1,59 @@
+{
+  "name": "social-downloader",
+  "displayName": "Social Downloader",
+  "version": "0.0.1",
+  "description": "Download Social Media with one click.",
+  "author": "minhchi1509",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build --zip && mv build/chrome-mv3-prod.zip social_downloader_extension.zip",
+    "package": "plasmo package",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ant-design/cssinjs": "^1.23.0",
+    "@fast-csv/format": "^5.0.2",
+    "antd": "^5.24.4",
+    "axios": "^1.8.3",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "fast-csv": "^5.0.2",
+    "plasmo": "0.90.3",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-router-dom": "^7.4.0",
+    "sonner": "^2.0.1",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "3.4.1",
+    "uuid": "^11.1.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@ianvs/prettier-plugin-sort-imports": "4.1.1",
+    "@types/chrome": "0.0.258",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "postcss": "8.4.33",
+    "prettier": "3.2.4",
+    "sass": "^1.86.0",
+    "typescript": "5.3.3"
+  },
+  "manifest": {
+    "permissions": [
+      "cookies",
+      "downloads",
+      "webRequest",
+      "webRequestBlocking",
+      "declarativeNetRequest",
+      "<all_urls>",
+      "activeTab",
+      "scripting",
+      "tabs",
+      "storage"
+    ],
+    "host_permissions": [
+      "<all_urls>"
+    ]
+  }
+}

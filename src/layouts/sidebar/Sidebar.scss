@@ -1,0 +1,41 @@
+.SidebarMenu {
+  li.ant-menu-submenu.ant-menu-submenu-inline {
+    div.ant-menu-submenu-title {
+      height: 36px !important;
+      padding: 4px;
+      padding-left: 10px !important;
+    }
+
+    ul.ant-menu.ant-menu-sub.ant-menu-inline {
+      background-color: white;
+      margin-left: 22px;
+      border-left: 1px solid #d6d6d6;
+
+      li.ant-menu-item {
+        height: 36px !important;
+        padding: 4px;
+        margin-left: 4px;
+        padding-left: 10px !important;
+        padding-right: 0px;
+
+        &:last-child {
+          margin-bottom: 0px;
+        }
+      }
+    }
+  }
+
+  li.ant-menu-item {
+    margin: 0px;
+    height: 36px !important;
+    padding: 4px;
+    padding-left: 10px !important;
+  }
+
+  &.ant-menu-inline-collapsed {
+    & li.ant-menu-item {
+      padding: 0px 12px !important;
+      height: 40px !important;
+    }
+  }
+}
