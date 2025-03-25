@@ -69,14 +69,6 @@ const ThreadsDownloadAllForm = () => {
         render: (_, __, index) => index + 1
       },
       {
-        title: "Username",
-        dataIndex: "username",
-        key: "username",
-        render: (username: string) => (
-          <p className="font-bold text-blue-700">{username}</p>
-        )
-      },
-      {
         title: "Loại tải",
         dataIndex: "downloadType",
         key: "downloadType",
@@ -84,6 +76,14 @@ const ThreadsDownloadAllForm = () => {
           <Tag color={DOWNLOAD_TYPE_TAG_COLOR[downloadType]}>
             {downloadType}
           </Tag>
+        )
+      },
+      {
+        title: "Username",
+        dataIndex: "username",
+        key: "username",
+        render: (username: string) => (
+          <p className="font-bold text-blue-700">{username}</p>
         )
       },
       {
@@ -129,15 +129,6 @@ const ThreadsDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IThreadsDownloadAllForm>
-            label="Username:"
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
-            ]}
-            style={{ flex: 8 }}>
-            <Input addonBefore="https://www.threads.net/@" />
-          </Form.Item>
-          <Form.Item<IThreadsDownloadAllForm>
             label="Loại tải:"
             name="type"
             rules={[
@@ -155,6 +146,15 @@ const ThreadsDownloadAllForm = () => {
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item<IThreadsDownloadAllForm>
+            label="Username:"
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên người dùng!" }
+            ]}
+            style={{ flex: 8 }}>
+            <Input addonBefore="https://www.threads.net/@" />
           </Form.Item>
           <Form.Item<IThreadsDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"

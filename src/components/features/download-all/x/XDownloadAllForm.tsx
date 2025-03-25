@@ -67,14 +67,6 @@ const XDownloadAllForm = () => {
         render: (_, __, index) => index + 1
       },
       {
-        title: "Username",
-        dataIndex: "username",
-        key: "username",
-        render: (username: string) => (
-          <p className="font-bold text-blue-700">{username}</p>
-        )
-      },
-      {
         title: "Loại tải",
         dataIndex: "downloadType",
         key: "downloadType",
@@ -82,6 +74,14 @@ const XDownloadAllForm = () => {
           <Tag color={DOWNLOAD_TYPE_TAG_COLOR[downloadType]}>
             {downloadType}
           </Tag>
+        )
+      },
+      {
+        title: "Username",
+        dataIndex: "username",
+        key: "username",
+        render: (username: string) => (
+          <p className="font-bold text-blue-700">{username}</p>
         )
       },
       {
@@ -127,15 +127,6 @@ const XDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IXDownloadAllForm>
-            label="Username:"
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
-            ]}
-            style={{ flex: 8 }}>
-            <Input addonBefore="https://x.com/" />
-          </Form.Item>
-          <Form.Item<IXDownloadAllForm>
             label="Loại tải:"
             name="type"
             rules={[
@@ -153,6 +144,15 @@ const XDownloadAllForm = () => {
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item<IXDownloadAllForm>
+            label="Username:"
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên người dùng!" }
+            ]}
+            style={{ flex: 8 }}>
+            <Input addonBefore="https://x.com/" />
           </Form.Item>
           <Form.Item<IXDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"

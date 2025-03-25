@@ -82,6 +82,36 @@ const getFbIdFromUsername = async (username: string) => {
   }
 }
 
+const getFbIdFromUrl = async (url: string) => {
+  if (!URL.canParse(url)) {
+    throw new Error("URL không hợp lệ")
+  }
+  const { data } = await fbAxiosInstance.get(url)
+  const userId = data?.match(/"userID":"(\d+)"/)?.[1]
+  if (!userId) {
+    throw new Error("Không thể lấy Facebook ID của người dùng từ URL")
+  }
+  return userId as string
+}
+
+const getPhotoDownloadUrl = async (photoId: string, userId: string) => {
+  const query = {
+    feed_location: "COMET_MEDIA_VIEWER",
+    id: btoa(`S:_I${userId}:VK:${photoId}`),
+    scale: 1
+  }
+  const docID = "9230003843719229"
+  const { data: responseData } = await makeRequestToFb(docID, query)
+  const menuItems = responseData.node.nfx_action_menu_items
+  const downloadMenuItem = menuItems.find(
+    (item: any) => item.__typename === "PhotoDownloadMenuItem"
+  )?.story?.attachments?.[0]?.media?.download_link
+  if (!downloadMenuItem) {
+    throw new Error("Không thể lấy link tải ảnh")
+  }
+  return downloadMenuItem as string
+}
+
 const getStoryMedia = async (storyId: string) => {
   const data = await makeRequestToFb("8367440913325249", {
     bucketID: storyId,
@@ -237,7 +267,9 @@ const facebookService = {
   getStoryMedia,
   getVideoDownloadUrl,
   getPostMedia,
-  getFbDownloadReelUrl
+  getFbDownloadReelUrl,
+  getFbIdFromUrl,
+  getPhotoDownloadUrl
 }
 
 export default facebookService

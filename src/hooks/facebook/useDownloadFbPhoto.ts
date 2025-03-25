@@ -66,10 +66,13 @@ const useDownloadFbPhoto = () => {
             if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
               return
             }
-            await chromeUtils.downloadFile({
-              url: photo.downloadUrl,
-              filename: `facebook_downloader/${userId}/photos/${profilePhotos.length + photoIndex}.jpg`
-            })
+            await chromeUtils.downloadFile(
+              {
+                url: photo.downloadUrl,
+                filename: `facebook_downloader/${userId}/photos/${profilePhotos.length + photoIndex}.jpg`
+              },
+              waitUntilCompleted
+            )
           },
           8
         )

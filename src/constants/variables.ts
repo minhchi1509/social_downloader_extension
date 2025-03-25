@@ -19,7 +19,8 @@ export const FB_DOWNLOAD_ALL_TYPE = [
   { label: "Ảnh", value: "PHOTO" },
   { label: "Video", value: "VIDEO" },
   { label: "Reels", value: "REEL" },
-  { label: "Story nổi bật", value: "HIGHLIGHT" }
+  { label: "Story nổi bật", value: "HIGHLIGHT" },
+  { label: "Album ảnh (theo ID)", value: "ALBUM_BY_ID" }
 ]
 
 export const DOWNLOAD_SEPARATELY_TYPE = [
@@ -91,7 +92,8 @@ export const DOWNLOAD_TYPE_TAG_COLOR = {
   STORY: "purple",
   VIDEO: "red",
   PHOTO: "cyan",
-  MEDIA: "magenta"
+  MEDIA: "magenta",
+  ALBUM_BY_ID: "lime"
 }
 
 export const PROCESS_STATUS_TAG_COLOR = {

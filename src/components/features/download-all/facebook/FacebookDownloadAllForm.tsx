@@ -18,6 +18,7 @@ import {
   PROCESS_STATUS_TAG_COLOR,
   PROCESS_TEXT
 } from "src/constants/variables"
+import useDownloadFbAlbum from "src/hooks/facebook/useDownloadFbAlbum"
 import useDownloadFbHighlight from "src/hooks/facebook/useDownloadFbHighlight"
 import useDownloadFbPhoto from "src/hooks/facebook/useDownloadFbPhoto"
 import useDownloadFbReel from "src/hooks/facebook/useDownloadFbReel"
@@ -43,16 +44,30 @@ const FacebookDownloadAllForm = () => {
   const { startDownloadAllReels } = useDownloadFbReel()
   const { startDownloadAllVideos } = useDownloadFbVideo()
   const { startDownloadAllHighlights } = useDownloadFbHighlight()
+  const { startDownloadAlbumById } = useDownloadFbAlbum()
 
   const isWaitUntilCompleted = Form.useWatch("waitUntilCompleted", form)
+  const downloadType = Form.useWatch("type", form)
   const fbDownloadProcesses = getDownloadProcessBySocial(
     ESocialProvider.FACEBOOK
   )
 
+  const downloadAllFunctions: { [key in TFacebookDownloadAllType]: Function } =
+    {
+      PHOTO: startDownloadAllPhotos,
+      REEL: startDownloadAllReels,
+      VIDEO: startDownloadAllVideos,
+      HIGHLIGHT: startDownloadAllHighlights,
+      ALBUM_BY_ID: startDownloadAlbumById
+    }
+
   const handleSubmit = async (values: IFacebookDownloadAllForm) => {
     try {
       setIsSubmitting(true)
-      const userId = await facebookService.getFbIdFromUsername(values.username)
+      let id = values.username
+      if (values.type !== "ALBUM_BY_ID") {
+        id = await facebookService.getFbIdFromUsername(values.username)
+      }
       setIsSubmitting(false)
       const processId = uuidv4()
       addProcess(ESocialProvider.FACEBOOK, {
@@ -62,18 +77,7 @@ const FacebookDownloadAllForm = () => {
         totalDownloadedItems: 0,
         status: "RUNNING"
       })
-      if (values.type === "PHOTO") {
-        await startDownloadAllPhotos(userId, processId, { ...values })
-      }
-      if (values.type === "REEL") {
-        await startDownloadAllReels(userId, processId, { ...values })
-      }
-      if (values.type === "VIDEO") {
-        await startDownloadAllVideos(userId, processId, { ...values })
-      }
-      if (values.type === "HIGHLIGHT") {
-        await startDownloadAllHighlights(userId, processId, { ...values })
-      }
+      await downloadAllFunctions[values.type](id, processId, { ...values })
     } catch (error) {
       showErrorToast((error as Error).message)
       setIsSubmitting(false)
@@ -92,14 +96,6 @@ const FacebookDownloadAllForm = () => {
         render: (_, __, index) => index + 1
       },
       {
-        title: "Username",
-        dataIndex: "username",
-        key: "username",
-        render: (username: string) => (
-          <p className="font-bold text-blue-700">{username}</p>
-        )
-      },
-      {
         title: "Loại tải",
         dataIndex: "downloadType",
         key: "downloadType",
@@ -107,6 +103,14 @@ const FacebookDownloadAllForm = () => {
           <Tag color={DOWNLOAD_TYPE_TAG_COLOR[downloadType]}>
             {downloadType}
           </Tag>
+        )
+      },
+      {
+        title: "ID/Username người dùng",
+        dataIndex: "username",
+        key: "username",
+        render: (username: string) => (
+          <p className="font-bold text-blue-700">{username}</p>
         )
       },
       {
@@ -154,15 +158,6 @@ const FacebookDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IFacebookDownloadAllForm>
-            label="Username:"
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
-            ]}
-            style={{ flex: 8 }}>
-            <Input addonBefore="https://www.facebook.com/" />
-          </Form.Item>
-          <Form.Item<IFacebookDownloadAllForm>
             label="Loại tải:"
             name="type"
             rules={[
@@ -179,6 +174,22 @@ const FacebookDownloadAllForm = () => {
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item<IFacebookDownloadAllForm>
+            label={
+              downloadType === "ALBUM_BY_ID"
+                ? "ID Album:"
+                : "ID/Username người dùng:"
+            }
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: `${downloadType === "ALBUM_BY_ID" ? "Vui lòng nhập ID của album" : "Vui lòng nhập ID/Username của người dùng"}`
+              }
+            ]}
+            style={{ flex: 8 }}>
+            <Input />
           </Form.Item>
           <Form.Item<IFacebookDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"

@@ -92,14 +92,6 @@ const IgDownloadAllForm = () => {
         render: (_, __, index) => index + 1
       },
       {
-        title: "Username",
-        dataIndex: "username",
-        key: "username",
-        render: (username: string) => (
-          <p className="font-bold text-blue-700">{username}</p>
-        )
-      },
-      {
         title: "Loại tải",
         dataIndex: "downloadType",
         key: "downloadType",
@@ -107,6 +99,14 @@ const IgDownloadAllForm = () => {
           <Tag color={DOWNLOAD_TYPE_TAG_COLOR[downloadType]}>
             {downloadType}
           </Tag>
+        )
+      },
+      {
+        title: "Username",
+        dataIndex: "username",
+        key: "username",
+        render: (username: string) => (
+          <p className="font-bold text-blue-700">{username}</p>
         )
       },
       {
@@ -154,15 +154,6 @@ const IgDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IIgDownloadAllForm>
-            label="Username:"
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
-            ]}
-            style={{ flex: 8 }}>
-            <Input addonBefore="https://www.instagram.com/" />
-          </Form.Item>
-          <Form.Item<IIgDownloadAllForm>
             label="Loại tải:"
             name="type"
             rules={[
@@ -179,6 +170,15 @@ const IgDownloadAllForm = () => {
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item<IIgDownloadAllForm>
+            label="Username:"
+            name="username"
+            rules={[
+              { required: true, message: "Vui lòng nhập tên người dùng!" }
+            ]}
+            style={{ flex: 8 }}>
+            <Input addonBefore="https://www.instagram.com/" />
           </Form.Item>
           <Form.Item<IIgDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"
