@@ -23,14 +23,12 @@ const useDownloadFbReel = () => {
       const baseQuery = {
         scale: 1,
         id: btoa(`app_collection:${userId}:168684841768375:260`),
-        feedLocation: "COMET_MEDIA_VIEWER",
-        feedbackSource: 65,
-        focusCommentID: null,
         renderLocation: null,
         useDefaultActor: true,
+        __relay_internal__pv__FBReels_deprecate_short_form_video_context_gkrelayprovider:
+          true,
         __relay_internal__pv__FBReelsMediaFooter_comet_enable_reels_ads_gkrelayprovider:
-          false,
-        __relay_internal__pv__IsWorkUserrelayprovider: false
+          true
       }
       const profileReels: IMedia[] = []
       let hasNextPage = false
@@ -41,7 +39,7 @@ const useDownloadFbReel = () => {
         if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
           return
         }
-        const docID = "8445448972232150"
+        const docID = "9608255752564845"
         const query = {
           ...baseQuery,
           count: 10,
@@ -63,12 +61,18 @@ const useDownloadFbReel = () => {
 
         const formattedReels: IMedia[] = originalReelsData.edges.map(
           (item: any) => {
-            const reel =
-              item.profile_reel_node.node.short_form_video_context
-                .playback_video.videoDeliveryLegacyFields
-            const id = reel.id
-            const downloadUrl =
-              reel.browser_native_hd_url || reel.browser_native_sd_url
+            const reelData = item.profile_reel_node.node.attachments[0].media
+            const id = reelData.id
+            const downloadUrlList =
+              reelData.videoDeliveryResponseFragment.videoDeliveryResponseResult
+                .progressive_urls
+            const hdDownloadUrl = downloadUrlList.find(
+              (url: any) => url.metadata.quality === "HD"
+            )?.progressive_url
+            const sdDownloadUrl = downloadUrlList.find(
+              (url: any) => url.metadata.quality === "SD"
+            )?.progressive_url
+            const downloadUrl = hdDownloadUrl || sdDownloadUrl
             return { id, downloadUrl }
           }
         )
