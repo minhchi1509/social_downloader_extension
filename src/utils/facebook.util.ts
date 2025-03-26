@@ -1,7 +1,10 @@
 import { fbAxiosInstance } from "src/configs/axios.config"
 import { EDownloadSeperateType } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
-import { DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE } from "src/constants/variables"
+import {
+  DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE,
+  MAX_RETRY_REQUEST
+} from "src/constants/variables"
 import { IFacebookStory } from "src/interfaces/facebook.interface"
 import facebookService from "src/services/facebook.service"
 import { chromeUtils } from "src/utils/chrome.util"
@@ -12,9 +15,13 @@ export const downloadFbPostMedia = async (postUrl: string) => {
     const { data: rawData } = await fbAxiosInstance.get(postUrl)
     const temp = JSON.parse(
       rawData.match(
-        /"all_subattachments":(.*?),"comet_product_tag_feed_overlay_renderer"/
-      )?.[1]
+        /"frame_sublayout_subattachments":(.*?),"mediaset_token"/
+      )?.[1] ||
+        rawData.match(
+          /"all_subattachments":(.*?),"comet_product_tag_feed_overlay_renderer"/
+        )?.[1]
     )
+
     const mediaSetToken = rawData.match(/"mediaset_token":"(.*?)"/)?.[1]
     if (!temp || !mediaSetToken) {
       throw new Error()
@@ -31,15 +38,29 @@ export const downloadFbPostMedia = async (postUrl: string) => {
       feedLocation: "COMET_MEDIA_VIEWER"
     }
     const docID = "9478994358856279"
+    let retryCount = 0
 
     while (totalDownloadedItems < totalPostMedia) {
+      if (retryCount >= MAX_RETRY_REQUEST) {
+        throw new Error()
+      }
       const query = { ...baseQuery, nodeID: cursor }
       const responseData = await facebookService.makeRequestToFb(docID, query)
-      const mediaData = JSON.parse(responseData?.split("\n")?.[0])?.data
-        ?.mediaset?.currMedia?.edges?.[0]?.node
-      if (!mediaData) {
+      if (typeof responseData !== "string") {
+        retryCount += 1
         continue
       }
+      const temp = responseData?.split("\n")?.[0]
+      const mediaData =
+        JSON.parse(temp)?.data?.mediaset?.currMedia?.edges?.[0]?.node
+      const originalNextCursorData = responseData?.match(
+        /"nextMediaAfterNodeId":(.*?)\},"extensions":/
+      )?.[1]
+      if (!mediaData || !originalNextCursorData) {
+        retryCount += 1
+        continue
+      }
+      const nextMediaData = JSON.parse(originalNextCursorData)
       const isVideo = mediaData.__isMedia === "Video"
       let downloadUrl = ""
       if (isVideo) {
@@ -63,10 +84,7 @@ export const downloadFbPostMedia = async (postUrl: string) => {
           isVideo ? "mp4" : "jpg"
         }`
       })
-
-      const nextMediaData = JSON.parse(
-        responseData.match(/"nextMediaAfterNodeId":(.*?)\},"extensions":/)?.[1]
-      )
+      retryCount = 0
       cursor = nextMediaData?.id
       totalDownloadedItems += 1
     }

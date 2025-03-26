@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select } from "antd"
+import { Alert, Button, Form, Input, Select } from "antd"
 import { useState } from "react"
 
 import { EDownloadSeperateType } from "src/constants/enum"
@@ -53,6 +53,13 @@ const DownloadSeperateForm = () => {
 
   return (
     <div>
+      <Alert
+        className="mb-3"
+        message="Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook/Instagram/Threads trước khi sử dụng các tính năng tương ứng dưới đây"
+        type="warning"
+        showIcon
+        closable
+      />
       <Form
         form={form}
         name="basic"
