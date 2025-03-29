@@ -15,13 +15,20 @@ export const X_DOWNLOAD_ALL_TYPE = [
   { label: "Ảnh/video trên trang cá nhân", value: "MEDIA" }
 ]
 
-export const FB_DOWNLOAD_ALL_TYPE = [
-  { label: "Ảnh", value: "PHOTO" },
-  { label: "Video", value: "VIDEO" },
-  { label: "Reels", value: "REEL" },
-  { label: "Story nổi bật", value: "HIGHLIGHT" },
-  { label: "Album ảnh (theo ID)", value: "ALBUM_BY_ID" }
-]
+export const FB_DOWNLOAD_ALL_TYPE = {
+  PROFILE: [
+    { label: "Ảnh", value: "PHOTO" },
+    { label: "Video", value: "VIDEO" },
+    { label: "Reels", value: "REEL" },
+    { label: "Story nổi bật", value: "HIGHLIGHT" },
+    { label: "Album ảnh (theo ID)", value: "ALBUM_BY_ID" }
+  ],
+  GROUP: [
+    { label: "Ảnh", value: "PHOTO" },
+    { label: "Video", value: "VIDEO" },
+    { label: "Album ảnh (theo ID)", value: "ALBUM_BY_ID" }
+  ]
+}
 
 export const DOWNLOAD_SEPARATELY_TYPE = [
   { label: "Ảnh/video trên bài viết", value: "POST" },

@@ -1,12 +1,21 @@
-import { EDownloadSeperateType } from "src/constants/enum"
+import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
 import { DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE } from "src/constants/variables"
 import { IIGStory } from "src/interfaces/instagram.interface"
 import instagramService from "src/services/instagram.service"
 import { chromeUtils } from "src/utils/chrome.util"
-import { downloadByBatch, extractIdFromUrl } from "src/utils/common.util"
+import {
+  downloadByBatch,
+  extractIdFromUrl,
+  isVerifyAccount
+} from "src/utils/common.util"
 
 export const downloadIgPostMedia = async (postUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
+    throw new Error(
+      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
+    )
+  }
   const postData = await instagramService.getIgPostDataByUrl(postUrl)
   const mediaList = [...postData.videos, ...postData.images]
   await Promise.all(
@@ -25,6 +34,11 @@ export const downloadIgPostMedia = async (postUrl: string) => {
 }
 
 export const downloadIgReelMedia = async (reelUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
+    throw new Error(
+      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
+    )
+  }
   const reelData = await instagramService.getIgReelDataByUrl(reelUrl)
   await chromeUtils.downloadFile({
     url: reelData.downloadUrl,
@@ -33,6 +47,11 @@ export const downloadIgReelMedia = async (reelUrl: string) => {
 }
 
 export const downloadIgHighlightStories = async (highlightUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
+    throw new Error(
+      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
+    )
+  }
   const highlightId = extractIdFromUrl(
     highlightUrl,
     URL_PATTERN[EDownloadSeperateType.INSTAGRAM_HIGHLIGHT]

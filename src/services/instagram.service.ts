@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 
 import { igAxiosInstance } from "src/configs/axios.config"
 import { IInstagramAccount } from "src/interfaces/account.interface"
-import { IMedia } from "src/interfaces/common.interface"
+import { IGetListResponse, IMedia } from "src/interfaces/common.interface"
 import {
   IIGPost,
   IIGProfile,
@@ -250,6 +250,135 @@ const getIgReelDataByUrl = async (reelUrl: string): Promise<IIGReel> => {
   }
 }
 
+const getProfileBulkPosts = async (
+  username: string,
+  nextCursor: string
+): Promise<IGetListResponse<IIGPost> | null> => {
+  try {
+    const docID = "8656566431124939"
+    const query = {
+      data: { count: 12 },
+      username,
+      __relay_internal__pv__PolarisIsLoggedInrelayprovider: true,
+      __relay_internal__pv__PolarisFeedShareMenurelayprovider: true,
+      after: nextCursor
+    }
+    const { data: responseData } = await igAxiosInstance.get("/", {
+      params: {
+        doc_id: docID,
+        variables: JSON.stringify(query)
+      }
+    })
+
+    const posts: any[] =
+      responseData?.data?.[
+        "xdt_api__v1__feed__user_timeline_graphql_connection"
+      ]?.edges
+    const pageInfor =
+      responseData?.data?.[
+        "xdt_api__v1__feed__user_timeline_graphql_connection"
+      ]?.page_info
+    if (!posts || !pageInfor) {
+      return null
+    }
+    const formattedPosts: IIGPost[] = posts.map((post) => {
+      const postData = post.node
+      const originalMediaList: any[] = Array.from(
+        postData.carousel_media || [postData]
+      )
+      const videos: IMedia[] = originalMediaList
+        .filter((media) => media.media_type === 2)
+        .map((media) => ({
+          downloadUrl: media.video_versions[0].url,
+          id: media.id
+        }))
+
+      const images: IMedia[] = originalMediaList
+        .filter((media) => media.media_type === 1)
+        .map((media) => ({
+          downloadUrl: media.image_versions2.candidates[0].url,
+          id: media.id
+        }))
+
+      return {
+        id: postData.id,
+        code: postData.code,
+        title: postData.caption?.text,
+        takenAt: dayjs.unix(postData.taken_at).format("DD/MM/YYYY HH:mm:ss"),
+        totalMedia: originalMediaList.length,
+        videoCount: videos.length,
+        imageCount: images.length,
+        likeCount: postData.like_and_view_counts_disabled
+          ? null
+          : postData.like_count,
+        commentCount: postData.comment_count,
+        videos,
+        images
+      }
+    })
+    const hasNextPage = pageInfor.has_next_page
+    const endCursor = pageInfor.end_cursor
+    return {
+      data: formattedPosts,
+      pagination: {
+        hasNextPage,
+        nextCursor: endCursor
+      }
+    }
+  } catch (error) {
+    return null
+  }
+}
+
+const getProfileBulkReels = async (
+  userId: string,
+  nextCursor: string
+): Promise<IGetListResponse<IIGReel> | null> => {
+  try {
+    const docID = "8526372674115715"
+    const query = {
+      data: {
+        include_feed_video: true,
+        page_size: 12,
+        target_user_id: userId
+      },
+      after: nextCursor
+    }
+    const { data: responseData } = await igAxiosInstance.get("/", {
+      params: {
+        doc_id: docID,
+        variables: JSON.stringify(query)
+      }
+    })
+    const reelsCode: string[] = responseData?.data?.[
+      "xdt_api__v1__clips__user__connection_v2"
+    ]?.edges?.map(({ node: reel }: any) => reel.media.code)
+    const pageInfor =
+      responseData?.data?.["xdt_api__v1__clips__user__connection_v2"]?.page_info
+    if (!reelsCode || !pageInfor) {
+      return null
+    }
+    const formattedReels: IIGReel[] = await Promise.all(
+      reelsCode.map((reelCode) =>
+        instagramService.getIgReelDataByUrl(
+          `https://www.instagram.com/reel/${reelCode}`
+        )
+      )
+    )
+    const hasNextPage = pageInfor.has_next_page
+    const endCursor = pageInfor.end_cursor
+    return {
+      data: formattedReels,
+      pagination: {
+        hasNextPage,
+        nextCursor: endCursor
+      }
+    }
+  } catch (error) {
+    return null
+  }
+}
+
 const instagramService = {
   getInstagramAccountData,
   getInstagramIdAndAvatarByUsername,
@@ -258,7 +387,9 @@ const instagramService = {
   getAllHighlightsIdOfUser,
   getActiveStoriesByUsername,
   getIgPostDataByUrl,
-  getIgReelDataByUrl
+  getIgReelDataByUrl,
+  getProfileBulkPosts,
+  getProfileBulkReels
 }
 
 export default instagramService

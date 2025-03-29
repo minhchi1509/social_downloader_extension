@@ -1,4 +1,3 @@
-import { igAxiosInstance } from "src/configs/axios.config"
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IDownloadAllOptions } from "src/interfaces/common.interface"
@@ -36,59 +35,31 @@ const useDownloadIgReel = () => {
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      let hasMore = true
-      let endCursor = ""
       const allReels: IIGReel[] = []
+      let currentCursor = ""
+      let retryCount = 0
       const { id: igUserId } =
         await instagramService.getInstagramIdAndAvatarByUsername(username)
-      const baseQuery = {
-        data: {
-          include_feed_video: true,
-          page_size: 12,
-          target_user_id: igUserId
-        }
-      }
-      let retryCount = 0
 
-      do {
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.INSTAGRAM, processId)) {
           return
         }
-        const { data } = await igAxiosInstance.get("/", {
-          params: {
-            doc_id: "8526372674115715",
-            variables: JSON.stringify({
-              ...baseQuery,
-              after: endCursor
-            })
-          }
-        })
-
-        const reelsCode: string[] = data?.data?.[
-          "xdt_api__v1__clips__user__connection_v2"
-        ]?.edges?.map(({ node: reel }: any) => reel.media.code)
-        const pageInfor =
-          data?.data?.["xdt_api__v1__clips__user__connection_v2"]?.page_info
-
-        if (!reelsCode || !pageInfor) {
-          retryCount++
+        const responseData = await instagramService.getProfileBulkReels(
+          igUserId,
+          currentCursor
+        )
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error("Đã xảy ra lỗi khi lấy dữ liệu reel từ Instagram")
           }
+          retryCount += 1
           continue
         }
-
-        const formattedReels: IIGReel[] = await Promise.all(
-          reelsCode.map((reelCode) =>
-            instagramService.getIgReelDataByUrl(
-              `https://www.instagram.com/reel/${reelCode}`
-            )
-          )
-        )
-
+        const { data: reels, pagination } = responseData
         await downloadByBatch(
-          formattedReels,
-          async (reel: IIGReel, reelIndex: number) => {
+          reels,
+          async (reel, reelIndex) => {
             if (!isDownloadProcessExist(ESocialProvider.INSTAGRAM, processId)) {
               return
             }
@@ -102,22 +73,22 @@ const useDownloadIgReel = () => {
               waitUntilCompleted
             )
           },
-          12,
-          (batchIndex: number) => {
-            updateProcess(ESocialProvider.INSTAGRAM, processId, {
-              totalDownloadedItems: allReels.length + batchIndex
-            })
-          }
+          12
         )
-        allReels.push(...formattedReels)
 
-        hasMore = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        allReels.push(...reels)
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.INSTAGRAM, processId, {
+          totalDownloadedItems: allReels.length
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasMore)
+      }
       if (allReels.length) {
         await downloadCsvFile(allReels, username)
       }

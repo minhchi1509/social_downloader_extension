@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Navigate, Route, Routes } from "react-router-dom"
 
 import { APP_ROUTES } from "src/constants/route"
 import MainLayout from "src/layouts/MainLayout"
@@ -13,7 +13,10 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route element={<FacebookDownloadAllPage />} index />
+        <Route
+          element={<Navigate to={APP_ROUTES.DOWNLOAD_ALL.FACEBOOK} />}
+          index
+        />
         <Route
           element={<FacebookDownloadAllPage />}
           path={APP_ROUTES.DOWNLOAD_ALL.FACEBOOK}

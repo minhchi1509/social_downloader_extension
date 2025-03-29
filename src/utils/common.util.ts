@@ -3,6 +3,7 @@ import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
 import { ESocialProvider } from "src/constants/enum"
+import useAuth from "src/store/auth"
 import useDownloadProcesses from "src/store/download-process"
 import { chromeUtils } from "src/utils/chrome.util"
 
@@ -13,9 +14,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const downloadByBatch = async (
-  data: any[],
-  downloadFunction: any,
+export const downloadByBatch = async <T>(
+  data: T[],
+  downloadFunction: (item: T, index: number) => Promise<void>,
   batchSize: number = 1,
   onDownloadBatchCompleted?: (batchIndex: number) => void | Promise<void>
 ) => {
@@ -83,4 +84,12 @@ export const isDownloadProcessExist = (
     (process) => process.id === processId
   )
   return isProcessExist
+}
+
+export const isVerifyAccount = (socialName: ESocialProvider) => {
+  const { accounts } = useAuth.getState()
+  if (!accounts[socialName]) {
+    return false
+  }
+  return true
 }

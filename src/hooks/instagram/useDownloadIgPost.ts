@@ -1,10 +1,8 @@
-import dayjs from "dayjs"
-
-import { igAxiosInstance } from "src/configs/axios.config"
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
-import { IDownloadAllOptions, IMedia } from "src/interfaces/common.interface"
+import { IDownloadAllOptions } from "src/interfaces/common.interface"
 import { IIGPost } from "src/interfaces/instagram.interface"
+import instagramService from "src/services/instagram.service"
 import useDownloadProcesses from "src/store/download-process"
 import { chromeUtils } from "src/utils/chrome.util"
 import {
@@ -40,88 +38,30 @@ const useDownloadIgPost = () => {
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      let hasMore = true
-      let endCursor = ""
       const allPosts: IIGPost[] = []
-      const baseQuery = {
-        data: { count: 12 },
-        username,
-        __relay_internal__pv__PolarisIsLoggedInrelayprovider: true,
-        __relay_internal__pv__PolarisFeedShareMenurelayprovider: true
-      }
+      let currentCursor = ""
       let retryCount = 0
 
-      do {
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.INSTAGRAM, processId)) {
           return
         }
-        const { data } = await igAxiosInstance.get("/", {
-          params: {
-            doc_id: "8656566431124939",
-            variables: JSON.stringify({
-              ...baseQuery,
-              after: endCursor
-            })
-          }
-        })
-
-        const posts: any[] =
-          data?.data?.["xdt_api__v1__feed__user_timeline_graphql_connection"]
-            ?.edges
-        const pageInfor =
-          data?.data?.["xdt_api__v1__feed__user_timeline_graphql_connection"]
-            ?.page_info
-
-        if (!posts || !pageInfor) {
-          retryCount++
+        const responseData = await instagramService.getProfileBulkPosts(
+          username,
+          currentCursor
+        )
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error(
               "Đã xảy ra lỗi khi lấy dữ liệu bài viết từ Instagram"
             )
           }
+          retryCount += 1
           continue
         }
-
-        const formattedPosts: IIGPost[] = posts.map((post) => {
-          const postData = post.node
-          const originalMediaList: any[] = Array.from(
-            postData.carousel_media || [postData]
-          )
-          const videos: IMedia[] = originalMediaList
-            .filter((media) => media.media_type === 2)
-            .map((media) => ({
-              downloadUrl: media.video_versions[0].url,
-              id: media.id
-            }))
-
-          const images: IMedia[] = originalMediaList
-            .filter((media) => media.media_type === 1)
-            .map((media) => ({
-              downloadUrl: media.image_versions2.candidates[0].url,
-              id: media.id
-            }))
-
-          return {
-            id: postData.id,
-            code: postData.code,
-            title: postData.caption?.text,
-            takenAt: dayjs
-              .unix(postData.taken_at)
-              .format("DD/MM/YYYY HH:mm:ss"),
-            totalMedia: originalMediaList.length,
-            videoCount: videos.length,
-            imageCount: images.length,
-            likeCount: postData.like_and_view_counts_disabled
-              ? null
-              : postData.like_count,
-            commentCount: postData.comment_count,
-            videos,
-            images
-          }
-        })
-
+        const { data: posts, pagination } = responseData
         await downloadByBatch(
-          formattedPosts,
+          posts,
           async (post: IIGPost, postIndex: number) => {
             if (!isDownloadProcessExist(ESocialProvider.INSTAGRAM, processId)) {
               return
@@ -151,14 +91,20 @@ const useDownloadIgPost = () => {
             })
           }
         )
-        allPosts.push(...formattedPosts)
-        hasMore = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        allPosts.push(...posts)
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.FACEBOOK, processId, {
+          totalDownloadedItems: allPosts.length
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasMore)
+      }
+
       if (allPosts.length) {
         await downloadCsvFile(allPosts, username)
       }

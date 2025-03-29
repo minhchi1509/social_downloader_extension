@@ -24,56 +24,34 @@ const useDownloadFbHighlight = () => {
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      const baseQuery = {
-        scale: 1,
-        id: btoa(
-          `profile_tile_view:${userId}:intro:intro_featured_highlights_content:hscroll_cards:profile_timeline:3:7`
-        )
-      }
-      const profileHighlightsId: string[] = []
-      let hasNextPage = false
-      let endCursor = ""
+      let currentCursor = ""
       let retryCount = 0
-
-      do {
+      let downloadedItems = 0
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
           return
         }
-        const docID = "9516333321764857"
-        const query = {
-          ...baseQuery,
-          count: 9,
-          cursor: endCursor
-        }
-        const responseData = await facebookService.makeRequestToFb(docID, query)
 
-        const originalHighlightsData =
-          responseData?.data.node?.profile_tile_items?.edges
-        const pageInfor =
-          responseData?.data?.node?.profile_tile_items?.page_info
+        const responseData = await facebookService.getProfileBulkHighlightsId(
+          userId,
+          currentCursor
+        )
 
-        if (!originalHighlightsData || !pageInfor) {
-          retryCount++
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error(
               "Đã xảy ra lỗi khi lấy dữ liệu highlight từ Facebook"
             )
           }
+          retryCount += 1
           continue
         }
 
-        const highlightsId: string[] = originalHighlightsData.map(
-          ({ node }: any) => node.node.id
-        )
-
+        const { data: highlightsId, pagination } = responseData
         for (let i = 0; i < highlightsId.length; i++) {
           const highlightId = highlightsId[i]
-          const highlightStories =
+          const { ownerId, stories } =
             await facebookService.getStoryMedia(highlightId)
-          if (!highlightStories) {
-            continue
-          }
-          const { ownerId, stories } = highlightStories
 
           await downloadByBatch(
             stories,
@@ -86,7 +64,7 @@ const useDownloadFbHighlight = () => {
               await chromeUtils.downloadFile(
                 {
                   url: story.downloadUrl,
-                  filename: `facebook_downloader/${ownerId}/highlights/hightlight_${highlightId}/${storyIndex}.${story.isVideo ? "mp4" : "jpg"}`
+                  filename: `facebook_downloader/profile_${ownerId}/highlights/hightlight_${highlightId}/${storyIndex}.${story.isVideo ? "mp4" : "jpg"}`
                 },
                 waitUntilCompleted
               )
@@ -94,18 +72,23 @@ const useDownloadFbHighlight = () => {
             DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE
           )
           updateProcess(ESocialProvider.FACEBOOK, processId, {
-            totalDownloadedItems: profileHighlightsId.length + i + 1
+            totalDownloadedItems: downloadedItems + i + 1
           })
         }
 
-        profileHighlightsId.push(...highlightsId)
-        hasNextPage = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        downloadedItems += highlightsId.length
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.FACEBOOK, processId, {
+          totalDownloadedItems: downloadedItems
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasNextPage)
+      }
       updateProcess(ESocialProvider.FACEBOOK, processId, {
         status: "COMPLETED"
       })

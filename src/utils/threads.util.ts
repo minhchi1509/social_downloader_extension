@@ -1,10 +1,13 @@
-import { EDownloadSeperateType } from "src/constants/enum"
+import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
 import threadsService from "src/services/threads.service"
 import { chromeUtils } from "src/utils/chrome.util"
-import { extractIdFromUrl } from "src/utils/common.util"
+import { extractIdFromUrl, isVerifyAccount } from "src/utils/common.util"
 
 export const downloadThreadsPostMedia = async (postUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.THREADS)) {
+    throw new Error("Vui lòng xác thực tài khoản Threads trước khi tải xuống!")
+  }
   const postId = extractIdFromUrl(
     postUrl,
     URL_PATTERN[EDownloadSeperateType.THREADS_POST]

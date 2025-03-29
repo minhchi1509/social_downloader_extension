@@ -20,88 +20,54 @@ const useDownloadFbReel = () => {
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      const baseQuery = {
-        scale: 1,
-        id: btoa(`app_collection:${userId}:168684841768375:260`),
-        renderLocation: null,
-        useDefaultActor: true,
-        __relay_internal__pv__FBReels_deprecate_short_form_video_context_gkrelayprovider:
-          true,
-        __relay_internal__pv__FBReelsMediaFooter_comet_enable_reels_ads_gkrelayprovider:
-          true
-      }
-      const profileReels: IMedia[] = []
-      let hasNextPage = false
-      let endCursor = ""
+      let currentCursor = ""
       let retryCount = 0
-
-      do {
+      let downloadedItems = 0
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
           return
         }
-        const docID = "9608255752564845"
-        const query = {
-          ...baseQuery,
-          count: 10,
-          cursor: endCursor
-        }
-        const responseText = await facebookService.makeRequestToFb(docID, query)
-
-        const originalReelsData = JSON.parse(
-          responseText?.split("\n")?.[0] ?? "null"
-        )?.data?.node?.aggregated_fb_shorts
-
-        if (!originalReelsData) {
-          retryCount++
+        const responseData = await facebookService.getProfileBulkReels(
+          userId,
+          currentCursor
+        )
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error("Đã xảy ra lỗi khi lấy dữ liệu reel từ Facebook")
           }
+          retryCount += 1
           continue
         }
-
-        const formattedReels: IMedia[] = originalReelsData.edges.map(
-          (item: any) => {
-            const reelData = item.profile_reel_node.node.attachments[0].media
-            const id = reelData.id
-            const downloadUrlList =
-              reelData.videoDeliveryResponseFragment.videoDeliveryResponseResult
-                .progressive_urls
-            const hdDownloadUrl = downloadUrlList.find(
-              (url: any) => url.metadata.quality === "HD"
-            )?.progressive_url
-            const sdDownloadUrl = downloadUrlList.find(
-              (url: any) => url.metadata.quality === "SD"
-            )?.progressive_url
-            const downloadUrl = hdDownloadUrl || sdDownloadUrl
-            return { id, downloadUrl }
-          }
-        )
-
+        const { data: reels, pagination } = responseData
         await downloadByBatch(
-          formattedReels,
+          reels,
           async (reel: IMedia, reelIndex: number) => {
             if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
               return
             }
-            await chromeUtils.downloadFile({
-              url: reel.downloadUrl,
-              filename: `facebook_downloader/${userId}/reels/${profileReels.length + reelIndex}.mp4`
-            })
+            await chromeUtils.downloadFile(
+              {
+                url: reel.downloadUrl,
+                filename: `facebook_downloader/profile_${userId}/reels/${downloadedItems + reelIndex}.mp4`
+              },
+              waitUntilCompleted
+            )
           },
           10
         )
-
-        profileReels.push(...formattedReels)
-        updateProcess(ESocialProvider.FACEBOOK, processId, {
-          totalDownloadedItems: profileReels.length
-        })
-        hasNextPage = originalReelsData.page_info.has_next_page
-        endCursor = originalReelsData.page_info.end_cursor
+        downloadedItems += reels.length
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.FACEBOOK, processId, {
+          totalDownloadedItems: downloadedItems
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasNextPage)
+      }
       updateProcess(ESocialProvider.FACEBOOK, processId, {
         status: "COMPLETED"
       })

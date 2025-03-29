@@ -10,9 +10,11 @@ import {
   Tag
 } from "antd"
 import { useMemo } from "react"
+import { Link } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
 import { ESocialProvider } from "src/constants/enum"
+import { APP_ROUTES } from "src/constants/route"
 import {
   DOWNLOAD_TYPE_TAG_COLOR,
   PROCESS_STATUS_TAG_COLOR,
@@ -27,6 +29,7 @@ import {
 } from "src/interfaces/download-process.interface"
 import { IXDownloadAllForm } from "src/interfaces/form.interface"
 import useDownloadProcesses from "src/store/download-process"
+import { isVerifyAccount } from "src/utils/common.util"
 import { showErrorToast } from "src/utils/toast.util"
 
 const XDownloadAllForm = () => {
@@ -40,6 +43,9 @@ const XDownloadAllForm = () => {
 
   const handleSubmit = async (values: IXDownloadAllForm) => {
     try {
+      if (!isVerifyAccount(ESocialProvider.X)) {
+        throw new Error("Vui lòng xác thực tài khoản X trước khi tải xuống!")
+      }
       const processId = uuidv4()
       addProcess(ESocialProvider.X, {
         id: processId,
@@ -121,7 +127,15 @@ const XDownloadAllForm = () => {
     <div>
       <Alert
         className="mb-3"
-        message="Hãy đảm bảo rằng bạn đã xác thực tài khoản X trước khi sử dụng các tính năng dưới đây!"
+        message={
+          <div>
+            Hãy đảm bảo rằng bạn đã xác thực tài khoản X (
+            <span>
+              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+            </span>
+            ) trước khi sử dụng các tính năng dưới đây!
+          </div>
+        }
         type="warning"
         showIcon
         closable

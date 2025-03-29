@@ -15,53 +15,35 @@ const useDownloadFbPhoto = () => {
   const { updateProcess } = useDownloadProcesses()
 
   const startDownloadAllPhotos = async (
-    userId: string,
+    target: "PROFILE" | "GROUP",
+    targetId: string,
     processId: string,
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      const baseQuery = {
-        scale: 1,
-        id: btoa(`app_collection:${userId}:2305272732:5`)
-      }
-      const profilePhotos: IMedia[] = []
-      let hasNextPage = false
-      let endCursor = ""
+      let currentCursor = ""
       let retryCount = 0
-
-      do {
+      let downloadedItems = 0
+      const downloadFunc =
+        target === "PROFILE"
+          ? facebookService.getProfileBulkPhotos
+          : facebookService.getGroupBulkPhotos
+      const downloadPath = `facebook_downloader/${target.toLowerCase()}_${targetId}/photos`
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
           return
         }
-        const docID = "9464814726967704"
-        const query = {
-          ...baseQuery,
-          count: 8,
-          cursor: endCursor
-        }
-
-        const responseData = await facebookService.makeRequestToFb(docID, query)
-
-        const originalPhotos = responseData?.data?.node?.pageItems?.edges
-        const pageInfor = responseData?.data?.node?.pageItems?.page_info
-
-        if (!originalPhotos || !pageInfor) {
-          retryCount++
+        const responseData = await downloadFunc(targetId, currentCursor)
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error("Đã xảy ra lỗi khi lấy dữ liệu ảnh từ Facebook")
           }
+          retryCount += 1
           continue
         }
-
-        const formattedPhotosList: IMedia[] = originalPhotos.map(
-          ({ node }: any) => ({
-            id: node.node.id,
-            downloadUrl: node.node.viewer_image.uri
-          })
-        )
-
+        const { data: photos, pagination } = responseData
         await downloadByBatch(
-          formattedPhotosList,
+          photos,
           async (photo: IMedia, photoIndex: number) => {
             if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
               return
@@ -69,25 +51,26 @@ const useDownloadFbPhoto = () => {
             await chromeUtils.downloadFile(
               {
                 url: photo.downloadUrl,
-                filename: `facebook_downloader/${userId}/photos/${profilePhotos.length + photoIndex}.jpg`
+                filename: `${downloadPath}/${downloadedItems + photoIndex}.jpg`
               },
               waitUntilCompleted
             )
           },
           8
         )
-
-        profilePhotos.push(...formattedPhotosList)
-        updateProcess(ESocialProvider.FACEBOOK, processId, {
-          totalDownloadedItems: profilePhotos.length
-        })
-        hasNextPage = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        downloadedItems += photos.length
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.FACEBOOK, processId, {
+          totalDownloadedItems: downloadedItems
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasNextPage)
+      }
       updateProcess(ESocialProvider.FACEBOOK, processId, {
         status: "COMPLETED"
       })

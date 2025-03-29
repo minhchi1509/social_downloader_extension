@@ -1,9 +1,6 @@
-import dayjs from "dayjs"
-
-import { threadsAxiosInstance } from "src/configs/axios.config"
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
-import { IDownloadAllOptions, IMedia } from "src/interfaces/common.interface"
+import { IDownloadAllOptions } from "src/interfaces/common.interface"
 import { IThreadsPost } from "src/interfaces/threads.interface"
 import threadsService from "src/services/threads.service"
 import useDownloadProcesses from "src/store/download-process"
@@ -42,183 +39,79 @@ const useDownloadThreadsPost = () => {
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      let hasMore = true
-      let endCursor = ""
       const allPosts: IThreadsPost[] = []
+      let currentCursor = ""
+      let retryCount = 0
       const userID = await threadsService.getUserIdByUsername(username)
 
-      const baseQuery = {
-        before: null,
-        first: 10,
-        last: null,
-        userID,
-        __relay_internal__pv__BarcelonaIsLoggedInrelayprovider: true,
-        __relay_internal__pv__BarcelonaIsInlineReelsEnabledrelayprovider: true,
-        __relay_internal__pv__BarcelonaOptionalCookiesEnabledrelayprovider:
-          true,
-        __relay_internal__pv__BarcelonaShowReshareCountrelayprovider: true,
-        __relay_internal__pv__BarcelonaQuotedPostUFIEnabledrelayprovider: false,
-        __relay_internal__pv__BarcelonaIsCrawlerrelayprovider: false,
-        __relay_internal__pv__BarcelonaShouldShowFediverseM075Featuresrelayprovider:
-          true
-      }
-      let retryCount = 0
-
-      do {
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.THREADS, processId)) {
           return
         }
-        const { data } = await threadsAxiosInstance.get("/", {
-          params: {
-            doc_id: "27451289061182391",
-            variables: JSON.stringify({
-              ...baseQuery,
-              after: endCursor
-            })
-          }
-        })
-
-        const posts: any[] = data?.data?.mediaData?.edges
-        const pageInfor = data?.data?.mediaData?.page_info
-
-        if (!posts || !pageInfor) {
-          retryCount++
+        const responseData = await threadsService.getProfileBulkPosts(
+          userID,
+          currentCursor
+        )
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bài viết từ Threads")
           }
+          retryCount += 1
           continue
         }
-        const formattedPosts: IThreadsPost[] = posts.map((post) => {
-          const postData = post.node.thread_items[0].post
-          const haveMedia =
-            postData?.carousel_media ||
-            postData?.image_versions2?.candidates?.length > 0 ||
-            postData?.video_versions ||
-            postData?.audio
-          if (!haveMedia) {
-            return {
-              id: postData.pk,
-              code: postData.code,
-              title: postData.caption?.text,
-              takenAt: dayjs
-                .unix(postData.taken_at)
-                .format("DD/MM/YYYY HH:mm:ss"),
-              totalMedia: 0,
-              videoCount: 0,
-              imageCount: 0,
-              audioCount: 0,
-              likeCount: postData.like_and_view_counts_disabled
-                ? null
-                : postData.like_count,
-              commentCount: postData.text_post_app_info.direct_reply_count,
-              images: [],
-              videos: [],
-              audios: []
-            }
-          }
+        const { data: posts, pagination } = responseData
+        const postsHaveMedia = posts.filter((post) => post.totalMedia > 0)
 
-          const originalMediaList: any[] = Array.from(
-            postData.carousel_media || [postData]
+        await downloadByBatch(postsHaveMedia, async (post, postIndex) => {
+          if (!isDownloadProcessExist(ESocialProvider.THREADS, processId)) {
+            return
+          }
+          const downloadPhotos = post.images.map((image) =>
+            chromeUtils.downloadFile(
+              {
+                url: image.downloadUrl,
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${image.id}.jpg`
+              },
+              waitUntilCompleted
+            )
           )
-          const videos: IMedia[] = originalMediaList
-            .filter((media) => !!media.video_versions)
-            .map((media) => ({
-              downloadUrl: media.video_versions[0].url,
-              id: media.id
-            }))
-
-          const images: IMedia[] = originalMediaList
-            .filter(
-              (media) => !!!media.video_versions && !!media.image_versions2
+          const downloadVideos = post.videos.map((video) =>
+            chromeUtils.downloadFile(
+              {
+                url: video.downloadUrl,
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${video.id}.mp4`
+              },
+              waitUntilCompleted
             )
-            .map((media) => ({
-              downloadUrl: media.image_versions2.candidates[0].url,
-              id: media.id
-            }))
-
-          const audios: IMedia[] = originalMediaList
-            .filter((media) => !!media.audio)
-            .map((media, index) => ({
-              id: `audio_${index}`,
-              downloadUrl: media.audio.audio_src
-            }))
-
-          return {
-            id: postData.pk,
-            code: postData.code,
-            title: postData.caption?.text,
-            takenAt: dayjs
-              .unix(postData.taken_at)
-              .format("DD/MM/YYYY HH:mm:ss"),
-            totalMedia: originalMediaList.length,
-            videoCount: videos.length,
-            imageCount: images.length,
-            audioCount: audios.length,
-            likeCount: postData.like_and_view_counts_disabled
-              ? null
-              : postData.like_count,
-            commentCount: postData.text_post_app_info.direct_reply_count,
-            videos,
-            images,
-            audios
-          }
+          )
+          const downloadAudios = post.audios.map((audio) =>
+            chromeUtils.downloadFile(
+              {
+                url: audio.downloadUrl,
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${audio.id}.mp3`
+              },
+              waitUntilCompleted
+            )
+          )
+          await Promise.all([
+            ...downloadPhotos,
+            ...downloadVideos,
+            ...downloadAudios
+          ])
+          updateProcess(ESocialProvider.THREADS, processId, {
+            totalDownloadedItems: allPosts.length + postIndex
+          })
         })
-
-        const postsHaveMedia = formattedPosts.filter(
-          (post) => post.totalMedia > 0
-        )
-
-        await downloadByBatch(
-          postsHaveMedia,
-          async (post: IThreadsPost, postIndex: number) => {
-            if (!isDownloadProcessExist(ESocialProvider.THREADS, processId)) {
-              return
-            }
-            const downloadPhotos = post.images.map((image) =>
-              chromeUtils.downloadFile(
-                {
-                  url: image.downloadUrl,
-                  filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${image.id}.jpg`
-                },
-                waitUntilCompleted
-              )
-            )
-            const downloadVideos = post.videos.map((video) =>
-              chromeUtils.downloadFile(
-                {
-                  url: video.downloadUrl,
-                  filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${video.id}.mp4`
-                },
-                waitUntilCompleted
-              )
-            )
-            const downloadAudios = post.audios.map((audio) =>
-              chromeUtils.downloadFile(
-                {
-                  url: audio.downloadUrl,
-                  filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${audio.id}.mp3`
-                },
-                waitUntilCompleted
-              )
-            )
-            await Promise.all([
-              ...downloadPhotos,
-              ...downloadVideos,
-              ...downloadAudios
-            ])
-            updateProcess(ESocialProvider.THREADS, processId, {
-              totalDownloadedItems: allPosts.length + postIndex
-            })
-          }
-        )
-        allPosts.push(...formattedPosts)
-        hasMore = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        allPosts.push(...posts)
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasMore)
+      }
       if (allPosts.length) {
         await downloadCsvFile(allPosts, username)
       }

@@ -3,7 +3,7 @@ import dayjs from "dayjs"
 
 import { threadsAxiosInstance } from "src/configs/axios.config"
 import { IThreadsAccount } from "src/interfaces/account.interface"
-import { IMedia } from "src/interfaces/common.interface"
+import { IGetListResponse, IMedia } from "src/interfaces/common.interface"
 import { IThreadsPost } from "src/interfaces/threads.interface"
 import { chromeUtils } from "src/utils/chrome.util"
 
@@ -137,9 +137,125 @@ const geThreadstPostDataByUrl = async (
   }
 }
 
+const getProfileBulkPosts = async (
+  userID: string,
+  nextCursor: string
+): Promise<IGetListResponse<IThreadsPost> | null> => {
+  try {
+    const docID = "27451289061182391"
+    const query = {
+      before: null,
+      first: 10,
+      last: null,
+      userID,
+      __relay_internal__pv__BarcelonaIsLoggedInrelayprovider: true,
+      __relay_internal__pv__BarcelonaIsInlineReelsEnabledrelayprovider: true,
+      __relay_internal__pv__BarcelonaOptionalCookiesEnabledrelayprovider: true,
+      __relay_internal__pv__BarcelonaShowReshareCountrelayprovider: true,
+      __relay_internal__pv__BarcelonaQuotedPostUFIEnabledrelayprovider: false,
+      __relay_internal__pv__BarcelonaIsCrawlerrelayprovider: false,
+      __relay_internal__pv__BarcelonaShouldShowFediverseM075Featuresrelayprovider:
+        true,
+      after: nextCursor
+    }
+    const { data: responseData } = await threadsAxiosInstance.get("/", {
+      params: {
+        doc_id: docID,
+        variables: JSON.stringify(query)
+      }
+    })
+    const posts: any[] = responseData?.data?.mediaData?.edges
+    const pageInfor = responseData?.data?.mediaData?.page_info
+    if (!posts || !pageInfor) {
+      return null
+    }
+    const formattedPosts: IThreadsPost[] = posts.map((post) => {
+      const postData = post.node.thread_items[0].post
+      const haveMedia =
+        postData?.carousel_media ||
+        postData?.image_versions2?.candidates?.length > 0 ||
+        postData?.video_versions ||
+        postData?.audio
+      if (!haveMedia) {
+        return {
+          id: postData.pk,
+          code: postData.code,
+          title: postData.caption?.text,
+          takenAt: dayjs.unix(postData.taken_at).format("DD/MM/YYYY HH:mm:ss"),
+          totalMedia: 0,
+          videoCount: 0,
+          imageCount: 0,
+          audioCount: 0,
+          likeCount: postData.like_and_view_counts_disabled
+            ? null
+            : postData.like_count,
+          commentCount: postData.text_post_app_info.direct_reply_count,
+          images: [],
+          videos: [],
+          audios: []
+        }
+      }
+
+      const originalMediaList: any[] = Array.from(
+        postData.carousel_media || [postData]
+      )
+      const videos: IMedia[] = originalMediaList
+        .filter((media) => !!media.video_versions)
+        .map((media) => ({
+          downloadUrl: media.video_versions[0].url,
+          id: media.id
+        }))
+
+      const images: IMedia[] = originalMediaList
+        .filter((media) => !!!media.video_versions && !!media.image_versions2)
+        .map((media) => ({
+          downloadUrl: media.image_versions2.candidates[0].url,
+          id: media.id
+        }))
+
+      const audios: IMedia[] = originalMediaList
+        .filter((media) => !!media.audio)
+        .map((media, index) => ({
+          id: `audio_${index}`,
+          downloadUrl: media.audio.audio_src
+        }))
+
+      return {
+        id: postData.pk,
+        code: postData.code,
+        title: postData.caption?.text,
+        takenAt: dayjs.unix(postData.taken_at).format("DD/MM/YYYY HH:mm:ss"),
+        totalMedia: originalMediaList.length,
+        videoCount: videos.length,
+        imageCount: images.length,
+        audioCount: audios.length,
+        likeCount: postData.like_and_view_counts_disabled
+          ? null
+          : postData.like_count,
+        commentCount: postData.text_post_app_info.direct_reply_count,
+        videos,
+        images,
+        audios
+      }
+    })
+    const hasNextPage = pageInfor?.has_next_page
+    const endCursor = pageInfor?.end_cursor
+    return {
+      data: formattedPosts,
+      pagination: {
+        hasNextPage,
+        nextCursor: endCursor
+      }
+    }
+  } catch (error) {
+    return null
+  }
+}
+
 const threadsService = {
   getThreadsAccountData,
   getUserIdByUsername,
+  getProfileBulkPosts,
   geThreadstPostDataByUrl
 }
 

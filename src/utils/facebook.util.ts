@@ -1,5 +1,5 @@
 import { fbAxiosInstance } from "src/configs/axios.config"
-import { EDownloadSeperateType } from "src/constants/enum"
+import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
 import {
   DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE,
@@ -8,10 +8,19 @@ import {
 import { IFacebookStory } from "src/interfaces/facebook.interface"
 import facebookService from "src/services/facebook.service"
 import { chromeUtils } from "src/utils/chrome.util"
-import { downloadByBatch, extractIdFromUrl } from "src/utils/common.util"
+import {
+  downloadByBatch,
+  extractIdFromUrl,
+  isVerifyAccount
+} from "src/utils/common.util"
 
 export const downloadFbPostMedia = async (postUrl: string) => {
   try {
+    if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
+      throw new Error(
+        "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
+      )
+    }
     const { data: rawData } = await fbAxiosInstance.get(postUrl)
     const temp = JSON.parse(
       rawData.match(
@@ -89,12 +98,16 @@ export const downloadFbPostMedia = async (postUrl: string) => {
       totalDownloadedItems += 1
     }
   } catch (error) {
-    console.log("Đã xảy ra lỗi khi lấy dữ liệu của bài viết:", error)
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu của bài viết")
+    throw new Error(
+      (error as Error).message || "Đã xảy ra lỗi khi lấy dữ liệu của bài viết!"
+    )
   }
 }
 
 export const downloadFbStoryMedia = async (storyUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
+    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+  }
   const storyId = extractIdFromUrl(
     storyUrl,
     URL_PATTERN[EDownloadSeperateType.FACEBOOK_STORY]
@@ -114,6 +127,9 @@ export const downloadFbStoryMedia = async (storyUrl: string) => {
 }
 
 export const downloadFbVideo = async (videoUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
+    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+  }
   const videoId = extractIdFromUrl(
     videoUrl,
     URL_PATTERN[EDownloadSeperateType.FACEBOOK_VIDEO]
@@ -126,6 +142,9 @@ export const downloadFbVideo = async (videoUrl: string) => {
 }
 
 export const downloadFbReel = async (reelUrl: string) => {
+  if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
+    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+  }
   const reelId = extractIdFromUrl(
     reelUrl,
     URL_PATTERN[EDownloadSeperateType.FACEBOOK_REEL]
@@ -139,6 +158,11 @@ export const downloadFbReel = async (reelUrl: string) => {
 
 export const downloadFbCommentVideo = async (commentUrl: string) => {
   try {
+    if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
+      throw new Error(
+        "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
+      )
+    }
     const commentId = new URL(commentUrl).searchParams.get("comment_id")
     if (!commentId) {
       throw new Error()
@@ -160,10 +184,9 @@ export const downloadFbCommentVideo = async (commentUrl: string) => {
       filename: `fb_comment_video_${commentId}.mp4`
     })
   } catch (error) {
-    console.log(
-      "Đã xảy ra lỗi khi lấy dữ liệu của video trong bình luận:",
-      error
+    throw new Error(
+      (error as Error).message ||
+        "Đã xảy ra lỗi khi lấy dữ liệu của video trong bình luận"
     )
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu của video trong bình luận")
   }
 }

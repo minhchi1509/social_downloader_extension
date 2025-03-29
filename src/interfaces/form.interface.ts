@@ -19,7 +19,9 @@ export interface IThreadsDownloadAllForm
   extends IDownloadAllForm<TThreadsDownloadAllType> {}
 
 export interface IFacebookDownloadAllForm
-  extends IDownloadAllForm<TFacebookDownloadAllType> {}
+  extends IDownloadAllForm<TFacebookDownloadAllType> {
+  target: "PROFILE" | "GROUP"
+}
 
 export interface IXDownloadAllForm
   extends IDownloadAllForm<TXDownloadAllType> {}

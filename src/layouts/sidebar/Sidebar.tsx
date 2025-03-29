@@ -1,6 +1,6 @@
 import { Layout, Menu, MenuProps } from "antd"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 import "./Sidebar.scss"
 
@@ -26,40 +26,41 @@ const menuItems: MenuItem[] = [
     label: "Tải hàng loạt",
     children: [
       {
-        key: "facebook",
+        key: APP_ROUTES.DOWNLOAD_ALL.FACEBOOK,
         icon: <FacebookIcon className="size-4" />,
         label: <Link to={APP_ROUTES.DOWNLOAD_ALL.FACEBOOK}>Facebook</Link>
       },
       {
-        key: "instagram",
+        key: APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM,
         icon: <InstagramIcon className="size-4" />,
         label: <Link to={APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM}>Instagram</Link>
       },
       {
-        key: "threads",
+        key: APP_ROUTES.DOWNLOAD_ALL.THREADS,
         icon: <ThreadsIcon className="size-4" />,
         label: <Link to={APP_ROUTES.DOWNLOAD_ALL.THREADS}>Threads</Link>
       },
       {
-        key: "x",
+        key: APP_ROUTES.DOWNLOAD_ALL.X,
         icon: <XIcon className="size-4" />,
         label: <Link to={APP_ROUTES.DOWNLOAD_ALL.X}>X</Link>
       }
     ]
   },
   {
-    key: "download_seperate",
+    key: APP_ROUTES.DOWNLOAD_SEPERATE,
     icon: <DownloadIcon className="size-4" />,
     label: <Link to={APP_ROUTES.DOWNLOAD_SEPERATE}>Tải riêng lẻ</Link>
   },
   {
-    key: "account",
+    key: APP_ROUTES.ACCOUNTS, // Đặt key là pathname của trang tài khoản
     icon: <UserIcon className="size-4" />,
     label: <Link to={APP_ROUTES.ACCOUNTS}>Tài Khoản</Link>
   }
 ]
 
 const Sidebar = () => {
+  const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
 
   return (
@@ -86,7 +87,7 @@ const Sidebar = () => {
         className="SidebarMenu"
         mode="inline"
         defaultOpenKeys={["download_all"]}
-        defaultSelectedKeys={["facebook"]}
+        selectedKeys={[location.pathname]}
         items={menuItems}
         style={{
           paddingLeft: "8px",

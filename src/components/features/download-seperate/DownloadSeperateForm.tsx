@@ -1,7 +1,9 @@
 import { Alert, Button, Form, Input, Select } from "antd"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 import { EDownloadSeperateType } from "src/constants/enum"
+import { APP_ROUTES } from "src/constants/route"
 import { DOWNLOAD_SEPERATE_TYPE_OPTIONS } from "src/constants/variables"
 import { IDownloadSeperateForm } from "src/interfaces/form.interface"
 import {
@@ -55,7 +57,16 @@ const DownloadSeperateForm = () => {
     <div>
       <Alert
         className="mb-3"
-        message="Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook/Instagram/Threads trước khi sử dụng các tính năng tương ứng dưới đây"
+        message={
+          <div>
+            Hãy đảm bảo rằng bạn đã xác thực tài khoản
+            Facebook/Instagram/Threads (
+            <span>
+              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+            </span>
+            ) trước khi sử dụng các tính năng tương ứng dưới đây!
+          </div>
+        }
         type="warning"
         showIcon
         closable

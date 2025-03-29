@@ -15,77 +15,63 @@ const useDownloadFbVideo = () => {
   const { updateProcess } = useDownloadProcesses()
 
   const startDownloadAllVideos = async (
-    userId: string,
+    target: "PROFILE" | "GROUP",
+    targetId: string,
     processId: string,
     { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
   ) => {
     try {
-      const baseQuery = {
-        scale: 1,
-        id: btoa(`app_collection:${userId}:1560653304174514:133`)
-      }
-      const profileVideos: IMedia[] = []
-      let hasNextPage = false
-      let endCursor = ""
+      let currentCursor = ""
       let retryCount = 0
+      let downloadedItems = 0
+      const downloadFunc =
+        target === "PROFILE"
+          ? facebookService.getProfileBulkVideos
+          : facebookService.getGroupBulkVideos
+      const downloadPath = `facebook_downloader/${target.toLowerCase()}_${targetId}/videos`
 
-      do {
+      while (true) {
         if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
           return
         }
-        const docID = "27205790585732100"
-        const query = {
-          ...baseQuery,
-          count: 8,
-          cursor: endCursor
-        }
-        const responseData = await facebookService.makeRequestToFb(docID, query)
-
-        const originalVideosId = responseData?.data?.node?.pageItems?.edges
-        const pageInfor = responseData?.data?.node?.pageItems?.page_info
-
-        if (!originalVideosId || !pageInfor) {
-          retryCount++
+        const responseData = await downloadFunc(targetId, currentCursor)
+        if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
             throw new Error("Đã xảy ra lỗi khi lấy dữ liệu video từ Facebook")
           }
+          retryCount += 1
           continue
         }
-
-        const formattedVideos: IMedia[] = await Promise.all(
-          originalVideosId.map(async ({ node }: any) => {
-            const id = node.node.id
-            const videoUrl = node.url
-            const downloadUrl =
-              await facebookService.getVideoDownloadUrl(videoUrl)
-            return { id, downloadUrl }
-          })
-        )
-
+        const { data: videos, pagination } = responseData
         await downloadByBatch(
-          formattedVideos,
+          videos,
           async (video: IMedia, videoIndex: number) => {
             if (!isDownloadProcessExist(ESocialProvider.FACEBOOK, processId)) {
               return
             }
-            await chromeUtils.downloadFile({
-              url: video.downloadUrl,
-              filename: `facebook_downloader/${userId}/videos/${profileVideos.length + videoIndex}.mp4`
-            })
+            await chromeUtils.downloadFile(
+              {
+                url: video.downloadUrl,
+                filename: `${downloadPath}/${downloadedItems + videoIndex}.mp4`
+              },
+              waitUntilCompleted
+            )
           },
           8
         )
-        profileVideos.push(...formattedVideos)
-        updateProcess(ESocialProvider.FACEBOOK, processId, {
-          totalDownloadedItems: profileVideos.length
-        })
-        hasNextPage = pageInfor.has_next_page
-        endCursor = pageInfor.end_cursor
+        downloadedItems += videos.length
+        currentCursor = pagination.nextCursor
         retryCount = 0
+        updateProcess(ESocialProvider.FACEBOOK, processId, {
+          totalDownloadedItems: downloadedItems
+        })
+        if (!pagination.hasNextPage) {
+          break
+        }
         if (!waitUntilCompleted) {
           await delay((delayTimeInSecond || 0) * 1000)
         }
-      } while (hasNextPage)
+      }
       updateProcess(ESocialProvider.FACEBOOK, processId, {
         status: "COMPLETED"
       })

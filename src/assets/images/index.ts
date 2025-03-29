@@ -1,3 +1,3 @@
-import AppLogo from "data-base64:./logo.png"
+import AlbumIdExampleImage from "data-base64:./album-id-example.png"
 
-export { AppLogo }
+export { AlbumIdExampleImage }
