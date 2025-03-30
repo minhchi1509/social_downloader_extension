@@ -2,6 +2,7 @@ import axios from "axios"
 
 import { fbAxiosInstance } from "src/configs/axios.config"
 import { ESocialProvider } from "src/constants/enum"
+import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IFacebookAccount } from "src/interfaces/account.interface"
 import { IGetListResponse, IMedia } from "src/interfaces/common.interface"
 import {
@@ -580,6 +581,171 @@ const getGroupBulkPhotos = async (
   }
 }
 
+const getCommentData = async (commentUrl: string) => {
+  try {
+    const { data: rawData } = await fbAxiosInstance.get(commentUrl)
+    const postIdRegex = /"post_id":"(.*?)"/
+    const postIdMatch = rawData.match(postIdRegex)
+    const postId = postIdMatch?.[1]
+    if (!postId) {
+      throw new Error()
+    }
+    const commentId = new URL(commentUrl).searchParams.get("comment_id")
+    if (!commentId) {
+      throw new Error()
+    }
+    const docID = "28843177298663113"
+    const baseQuery = {
+      commentsIntentToken: "RANKED_UNFILTERED_CHRONOLOGICAL_REPLIES_INTENT_V1",
+      feedLocation: "TAHOE",
+      focusCommentID: null,
+      scale: 1,
+      useDefaultActor: false,
+      id: btoa(`feedback:${postId}`),
+      __relay_internal__pv__IsWorkUserrelayprovider: false
+    }
+    let retryCount = 0
+    let nextCursor = ""
+    let hasNextPage = true
+    do {
+      const query = {
+        ...baseQuery,
+        ...(nextCursor && { commentsAfterCursor: nextCursor })
+      }
+      let responseData = await makeRequestToFb(docID, query)
+      if (typeof responseData === "string") {
+        responseData = JSON.parse(responseData.split("\n")?.[0] ?? "null")
+      }
+      const originalCommentDataList =
+        responseData?.data?.node?.comment_rendering_instance_for_feed_location
+          ?.comments?.edges
+      const pageInfor =
+        responseData?.data?.node?.comment_rendering_instance_for_feed_location
+          ?.comments?.page_info
+      if (!originalCommentDataList || !pageInfor) {
+        retryCount += 1
+        if (retryCount > MAX_RETRY_REQUEST) {
+          throw new Error()
+        }
+        continue
+      }
+      retryCount = 0
+      hasNextPage = pageInfor.has_next_page
+      nextCursor = pageInfor.end_cursor
+      const commentData = originalCommentDataList.find(
+        ({ node }: any) => node.legacy_fbid === commentId
+      )
+      if (!commentData) {
+        continue
+      }
+      const expansionToken =
+        commentData.node.feedback.expansion_info.expansion_token
+      const haveReply = !!commentData.node.feedback.replies_fields.total_count
+      const videoList =
+        commentData.node.attachments[0].style_type_renderer.attachment.media
+          .videoDeliveryResponseFragment.videoDeliveryResponseResult
+          .progressive_urls
+      const hdVideoUrl = videoList.find(
+        (videoData: any) => videoData.metadata.quality === "HD"
+      )?.progressive_url
+      const sdVideoUrl = videoList.find(
+        (videoData: any) => videoData.metadata.quality === "SD"
+      )?.progressive_url
+      const downloadUrl = hdVideoUrl || sdVideoUrl
+      return {
+        commentId,
+        postId,
+        expansionToken,
+        haveReply,
+        videoDownloadUrl: downloadUrl
+      }
+    } while (hasNextPage)
+    return null
+  } catch (error) {
+    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bình luận")
+  }
+}
+
+const getReplyCommentData = async (
+  commentId: string,
+  {
+    expansionToken,
+    postId,
+    parentCommentId
+  }: {
+    postId: string
+    expansionToken: string
+    parentCommentId: string
+  }
+) => {
+  try {
+    let retryCount = 0
+    let hasNextPage = true
+    let nextCursor = ""
+    const docID = "23910019488599200"
+    const baseQuery = {
+      clientKey: null,
+      expansionToken,
+      feedLocation: "DEDICATED_COMMENTING_SURFACE",
+      focusCommentID: null,
+      repliesAfterCount: null,
+      repliesAfterCursor: null,
+      repliesBeforeCount: null,
+      repliesBeforeCursor: null,
+      scale: 1,
+      useDefaultActor: false,
+      id: btoa(`feedback:${postId}_${parentCommentId}`),
+      __relay_internal__pv__IsWorkUserrelayprovider: false
+    }
+    do {
+      const query = {
+        ...baseQuery,
+        ...(nextCursor && { repliesAfterCursor: nextCursor })
+      }
+      let responseData = await makeRequestToFb(docID, query)
+      if (typeof responseData === "string") {
+        responseData = JSON.parse(responseData.split("\n")?.[0] ?? "null")
+      }
+      const originalCommentDataList =
+        responseData?.data?.node?.replies_connection?.edges
+      const pageInfor = responseData?.data?.node?.replies_connection?.page_info
+      if (!originalCommentDataList || !pageInfor) {
+        retryCount += 1
+        if (retryCount > MAX_RETRY_REQUEST) {
+          throw new Error()
+        }
+        continue
+      }
+      retryCount = 0
+      hasNextPage = pageInfor.has_next_page
+      nextCursor = pageInfor.end_cursor
+      const commentData = originalCommentDataList.find(
+        ({ node }: any) => node.legacy_fbid === commentId
+      )
+      if (!commentData) {
+        continue
+      }
+      const videoList =
+        commentData.node.attachments[0].style_type_renderer.attachment.media
+          .videoDeliveryResponseFragment.videoDeliveryResponseResult
+          .progressive_urls
+      const hdVideoUrl = videoList.find(
+        (videoData: any) => videoData.metadata.quality === "HD"
+      )?.progressive_url
+      const sdVideoUrl = videoList.find(
+        (videoData: any) => videoData.metadata.quality === "SD"
+      )?.progressive_url
+      const downloadUrl = hdVideoUrl || sdVideoUrl
+      return {
+        videoDownloadUrl: downloadUrl
+      }
+    } while (hasNextPage)
+    return null
+  } catch (error) {
+    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bình luận trả lời")
+  }
+}
+
 const facebookService = {
   makeRequestToFb,
   getFacebookAccountData,
@@ -597,7 +763,9 @@ const facebookService = {
   getProfileBulkVideos,
   getGroupBulkVideos,
   getProfileBulkHighlightsId,
-  getBulkAlbumMediaById
+  getBulkAlbumMediaById,
+  getCommentData,
+  getReplyCommentData
 }
 
 export default facebookService

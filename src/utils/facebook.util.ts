@@ -163,39 +163,77 @@ export const downloadFbCommentVideo = async (commentUrl: string) => {
         "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
       )
     }
-    const commentUrlSearchParams = new URL(commentUrl).searchParams
-    const commentId =
-      commentUrlSearchParams.get("reply_comment_id") ||
-      commentUrlSearchParams.get("comment_id")
-    if (!commentId) {
-      throw new Error()
-    }
-    const { data: rawData } = await fbAxiosInstance.get(commentUrl)
-    const videoDataRegex = new RegExp(
-      `"legacy_fbid":"${commentId}".*?"attachments":(\\[.*?\\])(?=,"is_markdown_enabled")`
+    const parentCommentId = new URL(commentUrl).searchParams.get("comment_id")
+    const replyCommentId = new URL(commentUrl).searchParams.get(
+      "reply_comment_id"
     )
-    const videoDataMatch = rawData.match(videoDataRegex)
-    if (!videoDataMatch) {
-      throw new Error()
-    }
 
-    const videoData = JSON.parse(videoDataMatch[1])
-    const downloadUrlList =
-      videoData[0].style_type_renderer.attachment.media
-        .videoDeliveryResponseFragment.videoDeliveryResponseResult
-        .progressive_urls
+    try {
+      const commentId = replyCommentId || parentCommentId
+      if (!commentId) {
+        throw new Error()
+      }
+      const { data: rawData } = await fbAxiosInstance.get(commentUrl)
+      const videoDataRegex = new RegExp(
+        `"legacy_fbid":"${commentId}".*?"attachments":(\\[.*?\\])(?=,"is_markdown_enabled")`
+      )
+      const videoDataMatch = rawData.match(videoDataRegex)
+      if (!videoDataMatch) {
+        throw new Error()
+      }
 
-    const hdVideo = downloadUrlList.find(
-      (v: any) => v.metadata.quality === "HD"
-    )
-    const sdVideo = downloadUrlList.find(
-      (v: any) => v.metadata.quality === "SD"
-    )
-    const downloadUrl = hdVideo.progressive_url || sdVideo.progressive_url
-    await chromeUtils.downloadFile({
-      url: downloadUrl,
-      filename: `fb_comment_video_${commentId}.mp4`
-    })
+      const videoData = JSON.parse(videoDataMatch[1])
+      const downloadUrlList =
+        videoData[0].style_type_renderer.attachment.media
+          .videoDeliveryResponseFragment.videoDeliveryResponseResult
+          .progressive_urls
+
+      const hdVideo = downloadUrlList.find(
+        (v: any) => v.metadata.quality === "HD"
+      )
+      const sdVideo = downloadUrlList.find(
+        (v: any) => v.metadata.quality === "SD"
+      )
+      const downloadUrl = hdVideo.progressive_url || sdVideo.progressive_url
+      await chromeUtils.downloadFile({
+        url: downloadUrl,
+        filename: `fb_comment_video_${commentId}.mp4`
+      })
+    } catch (error) {
+      const parentCommentData = await facebookService.getCommentData(commentUrl)
+      if (!parentCommentData) {
+        throw new Error()
+      }
+      const {
+        videoDownloadUrl,
+        commentId: parentCommentId,
+        expansionToken,
+        postId,
+        haveReply
+      } = parentCommentData
+      if (!replyCommentId) {
+        await chromeUtils.downloadFile({
+          url: videoDownloadUrl,
+          filename: `fb_comment_video_${parentCommentId}.mp4`
+        })
+      } else {
+        if (!haveReply) {
+          throw new Error()
+        }
+        const childCommentData = await facebookService.getReplyCommentData(
+          replyCommentId,
+          { parentCommentId, expansionToken, postId }
+        )
+        if (!childCommentData) {
+          throw new Error()
+        }
+        const { videoDownloadUrl } = childCommentData
+        await chromeUtils.downloadFile({
+          url: videoDownloadUrl,
+          filename: `fb_comment_video_${replyCommentId}.mp4`
+        })
+      }
+    }
   } catch (error) {
     throw new Error(
       (error as Error).message ||
