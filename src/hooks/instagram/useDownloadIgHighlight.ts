@@ -18,7 +18,11 @@ const useDownloadIgHighlight = () => {
   const startDownloadAllHightlights = async (
     username: string,
     processId: string,
-    { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
+    {
+      waitUntilCompleted,
+      delayTimeInSecond,
+      isMergeIntoOneFolder
+    }: IDownloadAllOptions
   ) => {
     try {
       const allHighlightsId =
@@ -37,12 +41,12 @@ const useDownloadIgHighlight = () => {
             if (!isDownloadProcessExist(ESocialProvider.INSTAGRAM, processId)) {
               return
             }
+            const downloadPath = `instagram_downloader/${username}/highlights/highlight_${highlightId}${isMergeIntoOneFolder ? "_" : "/"}${storyIndex}.${story.isVideo ? "mp4" : "jpg"}`
+
             await chromeUtils.downloadFile(
               {
                 url: story.downloadUrl,
-                filename: `instagram_downloader/${username}/highlights/highlight_${highlightId}/story_${storyIndex}.${
-                  story.isVideo ? "mp4" : "jpg"
-                }`
+                filename: downloadPath
               },
               waitUntilCompleted
             )

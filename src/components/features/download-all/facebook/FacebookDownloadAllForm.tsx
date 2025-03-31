@@ -211,7 +211,7 @@ const FacebookDownloadAllForm = () => {
                 message: "Vui lòng chọn đối tượng!"
               }
             ]}
-            style={{ flex: 4 }}>
+            style={{ flex: 1 }}>
             <Select>
               <Select.Option value="PROFILE">Người dùng</Select.Option>
               <Select.Option value="GROUP">Nhóm</Select.Option>
@@ -226,7 +226,7 @@ const FacebookDownloadAllForm = () => {
                 message: "Vui lòng chọn loại tải!"
               }
             ]}
-            style={{ flex: 4 }}>
+            style={{ flex: 1 }}>
             <Select>
               {FB_DOWNLOAD_ALL_TYPE[target]?.map((v) => (
                 <Select.Option key={v.value} value={v.value}>
@@ -250,9 +250,27 @@ const FacebookDownloadAllForm = () => {
                 message: `${downloadType === "ALBUM_BY_ID" ? "Vui lòng nhập ID của album" : target === "PROFILE" ? "Vui lòng nhập ID/Username của người dùng" : "Vui lòng nhập ID của nhóm"}!`
               }
             ]}
-            style={{ flex: 8 }}>
+            style={{ flex: 1 }}>
             <Input />
           </Form.Item>
+        </div>
+        <div className="flex gap-3 items-center">
+          {downloadType === "HIGHLIGHT" ? (
+            <Form.Item<IFacebookDownloadAllForm>
+              label="Tùy chọn tải xuống:"
+              name="isMergeIntoOneFolder"
+              initialValue={false}
+              style={{ flex: 8 }}>
+              <Select>
+                <Select.Option value={false}>
+                  Tạo riêng thư mục cho từng highlight
+                </Select.Option>
+                <Select.Option value={true}>
+                  Gộp ảnh và video vào chung một thư mục
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          ) : null}
           <Form.Item<IFacebookDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"
             name="waitUntilCompleted"

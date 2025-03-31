@@ -35,7 +35,11 @@ const useDownloadIgPost = () => {
   const startDownloadAllPosts = async (
     username: string,
     processId: string,
-    { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
+    {
+      waitUntilCompleted,
+      delayTimeInSecond,
+      isMergeIntoOneFolder
+    }: IDownloadAllOptions
   ) => {
     try {
       const allPosts: IIGPost[] = []
@@ -68,13 +72,12 @@ const useDownloadIgPost = () => {
             }
             const mediaList = [...post.videos, ...post.images]
             await Promise.all(
-              mediaList.map(async (media) => {
+              mediaList.map(async (media, mediaIndex) => {
+                const downloadPath = `instagram_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${mediaIndex + 1}.${media.downloadUrl.split(".").pop()}`
                 await chromeUtils.downloadFile(
                   {
                     url: media.downloadUrl,
-                    filename: `instagram_downloader/${username}/posts/post_${
-                      allPosts.length + postIndex
-                    }/${media.id}.${media.downloadUrl.split(".").pop()}`
+                    filename: downloadPath
                   },
                   waitUntilCompleted
                 )

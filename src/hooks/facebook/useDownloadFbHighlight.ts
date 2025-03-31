@@ -21,7 +21,11 @@ const useDownloadFbHighlight = () => {
   const startDownloadAllHighlights = async (
     userId: string,
     processId: string,
-    { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
+    {
+      waitUntilCompleted,
+      delayTimeInSecond,
+      isMergeIntoOneFolder
+    }: IDownloadAllOptions
   ) => {
     try {
       let currentCursor = ""
@@ -64,7 +68,7 @@ const useDownloadFbHighlight = () => {
               await chromeUtils.downloadFile(
                 {
                   url: story.downloadUrl,
-                  filename: `facebook_downloader/profile_${ownerId}/highlights/hightlight_${highlightId}/${storyIndex}.${story.isVideo ? "mp4" : "jpg"}`
+                  filename: `facebook_downloader/profile_${ownerId}/highlights/hightlight_${highlightId}${isMergeIntoOneFolder ? "_" : "/"}${storyIndex}.${story.isVideo ? "mp4" : "jpg"}`
                 },
                 waitUntilCompleted
               )

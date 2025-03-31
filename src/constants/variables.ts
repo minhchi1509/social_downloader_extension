@@ -89,6 +89,15 @@ export const DOWNLOAD_SEPERATE_TYPE_OPTIONS = [
         value: EDownloadSeperateType.THREADS_POST
       }
     ]
+  },
+  {
+    group: "X",
+    options: [
+      {
+        label: "Ảnh/video trên bài viết (X)",
+        value: EDownloadSeperateType.X_POST
+      }
+    ]
   }
 ]
 

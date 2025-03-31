@@ -36,7 +36,11 @@ const useDownloadThreadsPost = () => {
   const startDownloadAllPosts = async (
     username: string,
     processId: string,
-    { waitUntilCompleted, delayTimeInSecond }: IDownloadAllOptions
+    {
+      waitUntilCompleted,
+      delayTimeInSecond,
+      isMergeIntoOneFolder
+    }: IDownloadAllOptions
   ) => {
     try {
       const allPosts: IThreadsPost[] = []
@@ -66,11 +70,12 @@ const useDownloadThreadsPost = () => {
           if (!isDownloadProcessExist(ESocialProvider.THREADS, processId)) {
             return
           }
+
           const downloadPhotos = post.images.map((image) =>
             chromeUtils.downloadFile(
               {
                 url: image.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${image.id}.jpg`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${image.id}.jpg`
               },
               waitUntilCompleted
             )
@@ -79,7 +84,7 @@ const useDownloadThreadsPost = () => {
             chromeUtils.downloadFile(
               {
                 url: video.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${video.id}.mp4`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${video.id}.mp4`
               },
               waitUntilCompleted
             )
@@ -88,7 +93,7 @@ const useDownloadThreadsPost = () => {
             chromeUtils.downloadFile(
               {
                 url: audio.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}/${audio.id}.mp3`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${audio.id}.mp3`
               },
               waitUntilCompleted
             )

@@ -20,6 +20,7 @@ import {
 } from "src/utils/instagram.util"
 import { downloadThreadsPostMedia } from "src/utils/threads.util"
 import { showErrorToast, showSuccessToast } from "src/utils/toast.util"
+import { downloadXPostMedia } from "src/utils/x.util"
 
 const { Option, OptGroup } = Select
 
@@ -34,7 +35,9 @@ const downloadSeperateFunction = {
   [EDownloadSeperateType.INSTAGRAM_REEL]: downloadIgReelMedia,
   [EDownloadSeperateType.INSTAGRAM_HIGHLIGHT]: downloadIgHighlightStories,
 
-  [EDownloadSeperateType.THREADS_POST]: downloadThreadsPostMedia
+  [EDownloadSeperateType.THREADS_POST]: downloadThreadsPostMedia,
+
+  [EDownloadSeperateType.X_POST]: downloadXPostMedia
 }
 
 const DownloadSeperateForm = () => {
@@ -60,7 +63,7 @@ const DownloadSeperateForm = () => {
         message={
           <div>
             Hãy đảm bảo rằng bạn đã xác thực tài khoản
-            Facebook/Instagram/Threads (
+            Facebook/Instagram/Threads/X (
             <span>
               <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
             </span>

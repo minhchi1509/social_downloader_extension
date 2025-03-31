@@ -23,6 +23,8 @@ const INSTAGRAM_HIGHLIGHT_URL_PATTERN =
 const THREADS_POST_URL_PATTERN =
   /https:\/\/www\.threads\.net\/@[^\/]+\/post\/([\w-]+)/
 
+const X_POST_URL_PATTERN = /https:\/\/x\.com\/[^\/]+\/status\/([\w-]+)/
+
 export const URL_PATTERN = {
   [EDownloadSeperateType.FACEBOOK_POST]: FACEBOOK_POST_URL_PATTERN,
   [EDownloadSeperateType.FACEBOOK_STORY]: FACEBOOK_STORY_URL_PATTERN,
@@ -33,5 +35,7 @@ export const URL_PATTERN = {
   [EDownloadSeperateType.INSTAGRAM_REEL]: INSTAGRAM_REEL_URL_PATTERN,
   [EDownloadSeperateType.INSTAGRAM_HIGHLIGHT]: INSTAGRAM_HIGHLIGHT_URL_PATTERN,
 
-  [EDownloadSeperateType.THREADS_POST]: THREADS_POST_URL_PATTERN
+  [EDownloadSeperateType.THREADS_POST]: THREADS_POST_URL_PATTERN,
+
+  [EDownloadSeperateType.X_POST]: X_POST_URL_PATTERN
 }

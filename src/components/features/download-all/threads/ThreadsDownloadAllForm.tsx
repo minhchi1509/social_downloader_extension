@@ -162,7 +162,7 @@ const ThreadsDownloadAllForm = () => {
               }
             ]}
             initialValue="POST"
-            style={{ flex: 4 }}>
+            style={{ flex: 1 }}>
             <Select>
               {THREADS_DOWNLOAD_ALL_TYPE.map((v) => (
                 <Select.Option key={v.value} value={v.value}>
@@ -177,8 +177,24 @@ const ThreadsDownloadAllForm = () => {
             rules={[
               { required: true, message: "Vui lòng nhập tên người dùng!" }
             ]}
+            style={{ flex: 1 }}>
+            <Input />
+          </Form.Item>
+        </div>
+        <div className="flex gap-3 items-center">
+          <Form.Item<IThreadsDownloadAllForm>
+            label="Tùy chọn tải xuống:"
+            name="isMergeIntoOneFolder"
+            initialValue={false}
             style={{ flex: 8 }}>
-            <Input addonBefore="https://www.threads.net/@" />
+            <Select>
+              <Select.Option value={false}>
+                Tạo riêng thư mục cho từng bài viết
+              </Select.Option>
+              <Select.Option value={true}>
+                Gộp ảnh và video vào chung một thư mục
+              </Select.Option>
+            </Select>
           </Form.Item>
           <Form.Item<IThreadsDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"

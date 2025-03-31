@@ -23,7 +23,9 @@ export enum EDownloadSeperateType {
   INSTAGRAM_REEL = "INSTAGRAM_REEL",
   INSTAGRAM_HIGHLIGHT = "INSTAGRAM_HIGHLIGHT",
 
-  THREADS_POST = "THREADS_POST"
+  THREADS_POST = "THREADS_POST",
+
+  X_POST = "X_POST"
 }
 
 export enum ERemoteMessageType {

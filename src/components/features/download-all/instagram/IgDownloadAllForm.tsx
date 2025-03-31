@@ -41,6 +41,7 @@ const IgDownloadAllForm = () => {
     useDownloadProcess()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [form] = Form.useForm<IIgDownloadAllForm>()
+  const downloadType = Form.useWatch("type", form)
   const { startDownloadAllPosts } = useDownloadIgPost()
   const { startDownloadAllReels } = useDownloadIgReel()
   const { startDownloadAllHightlights } = useDownloadIgHighlight()
@@ -198,12 +199,29 @@ const IgDownloadAllForm = () => {
           <Form.Item<IIgDownloadAllForm>
             label="Username:"
             name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
-            ]}
-            style={{ flex: 8 }}>
-            <Input addonBefore="https://www.instagram.com/" />
+            rules={[{ required: true, message: "Vui lòng nhập username!" }]}
+            style={{ flex: 4 }}>
+            <Input />
           </Form.Item>
+        </div>
+        <div className="flex gap-3 items-center">
+          {downloadType === "POST" || downloadType === "HIGHLIGHT" ? (
+            <Form.Item<IIgDownloadAllForm>
+              label="Tùy chọn tải xuống:"
+              name="isMergeIntoOneFolder"
+              initialValue={false}
+              style={{ flex: 8 }}>
+              <Select>
+                <Select.Option value={false}>
+                  Tạo riêng thư mục cho từng{" "}
+                  {downloadType === "POST" ? "bài viết" : "hightlight"}
+                </Select.Option>
+                <Select.Option value={true}>
+                  Gộp ảnh và video vào chung một thư mục
+                </Select.Option>
+              </Select>
+            </Form.Item>
+          ) : null}
           <Form.Item<IIgDownloadAllForm>
             label="Tùy chọn cho tiến trình tải:"
             name="waitUntilCompleted"
