@@ -2,6 +2,7 @@ import axios from "axios"
 import dayjs from "dayjs"
 
 import { igAxiosInstance } from "src/configs/axios.config"
+import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IInstagramAccount } from "src/interfaces/account.interface"
 import { IGetListResponse, IMedia } from "src/interfaces/common.interface"
 import {
@@ -95,24 +96,37 @@ const getProfileStatistics = async (username: string) => {
 }
 
 const getAllStoriesByHighlightId = async (highlightId: string) => {
-  const { data } = await igAxiosInstance.get(
-    `https://www.instagram.com/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={"highlight_reel_ids":[${highlightId}],"reel_ids":[],"location_ids":[],"precomposed_overlay":false}`
-  )
-  const storiesMedia: any[] = data.data?.reels_media?.[0]?.items
-  if (!storiesMedia) {
-    throw new Error("Không thể lấy story từ highlight")
+  try {
+    let retryCount = 0
+    while (true) {
+      const { data } = await igAxiosInstance.get(
+        `https://www.instagram.com/graphql/query/?query_hash=45246d3fe16ccc6577e0bd297a5db1ab&variables={"highlight_reel_ids":[${highlightId}],"reel_ids":[],"location_ids":[],"precomposed_overlay":false}`
+      )
+      const storiesMedia: any[] = data?.data?.reels_media?.[0]?.items
+      if (!storiesMedia) {
+        retryCount += 1
+        if (retryCount > MAX_RETRY_REQUEST) {
+          throw new Error()
+        }
+        continue
+      }
+
+      const result: IIGStory[] = storiesMedia.map((story) => ({
+        id: story.id,
+        isVideo: story.is_video,
+        takenAt: story.taken_at_timestamp,
+        downloadUrl: story.is_video
+          ? story.video_resources[0].src
+          : story.display_url
+      }))
+
+      return result.reverse()
+    }
+  } catch (error) {
+    throw new Error(
+      `Đã xảy ra lỗi khi lấy dữ liệu story từ highlight ${highlightId}`
+    )
   }
-
-  const result: IIGStory[] = storiesMedia.map((story) => ({
-    id: story.id,
-    isVideo: story.is_video,
-    takenAt: story.taken_at_timestamp,
-    downloadUrl: story.is_video
-      ? story.video_resources[0].src
-      : story.display_url
-  }))
-
-  return result
 }
 
 const getAllHighlightsIdOfUser = async (username: string) => {

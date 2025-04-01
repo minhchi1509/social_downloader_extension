@@ -258,68 +258,81 @@ const getPhotoDownloadUrl = async (photoId: string, userId: string) => {
 }
 
 const getStoryMedia = async (storyId: string) => {
-  const data = await makeRequestToFb("8367440913325249", {
-    bucketID: storyId,
-    focusCommentID: null,
-    scale: 1
-  })
-
-  const storiesDataString = data.match(
-    /"unified_stories":\{"edges":(.*?)\},"owner":\{/
-  )
-  const storyOwnerIdString = data.match(
-    /"__isNode":"User","id":"(.*?)","name":/
-  )
-
-  if (
-    storiesDataString &&
-    storiesDataString[1] &&
-    storyOwnerIdString &&
-    storyOwnerIdString[1]
-  ) {
-    const storyOwnerId = storyOwnerIdString[1]
-    const storiesData: any[] = JSON.parse(storiesDataString[1])
-
-    const stories: IFacebookStory[] = storiesData
-      .map((story) => {
-        const storyData = story?.node?.attachments?.[0]?.media
-        if (!storyData) {
-          return undefined
-        }
-        const id = storyData.id
-        const isVideo = storyData.__isMedia === "Video"
-        if (isVideo) {
-          const videoDataList =
-            storyData.videoDeliveryResponseFragment.videoDeliveryResponseResult
-              .progressive_urls
-          const hdVideoUrl = videoDataList.find(
-            (videoData: any) => videoData.metadata.quality === "HD"
-          )?.progressive_url
-          const sdVideoUrl = videoDataList.find(
-            (videoData: any) => videoData.metadata.quality === "SD"
-          )?.progressive_url
-          const videoThumbnailUrl =
-            storyData.previewImage.uri ||
-            storyData.preferred_thumbnail.image.uri
-          return {
-            id,
-            downloadUrl: hdVideoUrl || sdVideoUrl,
-            isVideo,
-            thumbnailUrl: videoThumbnailUrl
-          }
-        }
-
-        return {
-          id,
-          downloadUrl: storyData.image.uri,
-          isVideo,
-          thumbnailUrl: undefined
-        }
+  try {
+    let retryCount = 0
+    while (true) {
+      const data = await makeRequestToFb("8367440913325249", {
+        bucketID: storyId,
+        focusCommentID: null,
+        scale: 1
       })
-      .filter((story) => !!story)
-    return { ownerId: storyOwnerId, stories }
+      if (typeof data !== "string") {
+        retryCount += 1
+        if (retryCount > MAX_RETRY_REQUEST) {
+          throw new Error()
+        }
+        continue
+      }
+
+      const storiesDataString = data.match(
+        /"unified_stories":\{"edges":(.*?)\},"owner":\{/
+      )
+      const storyOwnerIdString = data.match(
+        /"__isNode":"User","id":"(.*?)","name":/
+      )
+
+      if (
+        storiesDataString &&
+        storiesDataString[1] &&
+        storyOwnerIdString &&
+        storyOwnerIdString[1]
+      ) {
+        const storyOwnerId = storyOwnerIdString[1]
+        const storiesData: any[] = JSON.parse(storiesDataString[1])
+
+        const stories: IFacebookStory[] = storiesData
+          .map((story) => {
+            const storyData = story?.node?.attachments?.[0]?.media
+            if (!storyData) {
+              return undefined
+            }
+            const id = storyData.id
+            const isVideo = storyData.__isMedia === "Video"
+            if (isVideo) {
+              const videoDataList =
+                storyData.videoDeliveryResponseFragment
+                  .videoDeliveryResponseResult.progressive_urls
+              const hdVideoUrl = videoDataList.find(
+                (videoData: any) => videoData.metadata.quality === "HD"
+              )?.progressive_url
+              const sdVideoUrl = videoDataList.find(
+                (videoData: any) => videoData.metadata.quality === "SD"
+              )?.progressive_url
+              const videoThumbnailUrl =
+                storyData.previewImage.uri ||
+                storyData.preferred_thumbnail.image.uri
+              return {
+                id,
+                downloadUrl: hdVideoUrl || sdVideoUrl,
+                isVideo,
+                thumbnailUrl: videoThumbnailUrl
+              }
+            }
+
+            return {
+              id,
+              downloadUrl: storyData.image.uri,
+              isVideo,
+              thumbnailUrl: undefined
+            }
+          })
+          .filter((story) => !!story)
+        return { ownerId: storyOwnerId, stories }
+      }
+    }
+  } catch (error) {
+    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu story")
   }
-  throw new Error(`Không thể lấy dữ liệu story ${storyId}`)
 }
 
 const getVideoDownloadUrl = async (videoIdOrUrl: string) => {
