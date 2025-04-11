@@ -13,10 +13,17 @@ const MainLayout = () => {
       <Layout style={{ minHeight: "100vh" }}>
         <Sidebar />
         <Layout>
-          <Content style={{ padding: 24, paddingBottom: 24 }}>
+          <Content
+            style={{
+              padding: 24,
+              paddingBottom: 24
+            }}
+            className="bg-zinc-50 dark:bg-zinc-900">
             <Outlet />
           </Content>
-          <AntdFooter style={{ paddingTop: 0, paddingBottom: 8 }}>
+          <AntdFooter
+            style={{ paddingTop: 0, paddingBottom: 8 }}
+            className="bg-zinc-50 dark:bg-zinc-900">
             <Footer />
           </AntdFooter>
         </Layout>

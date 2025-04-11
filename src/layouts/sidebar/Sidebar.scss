@@ -7,9 +7,9 @@
     }
 
     ul.ant-menu.ant-menu-sub.ant-menu-inline {
-      background-color: white;
+      background-color: transparent;
       margin-left: 22px;
-      border-left: 1px solid #d6d6d6;
+      border-left: 1px solid hsl(var(--border));
 
       li.ant-menu-item {
         height: 36px !important;

@@ -1,7 +1,7 @@
 {
   "name": "social-downloader",
   "displayName": "Social Downloader",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Download Social Media with one click.",
   "author": "minhchi1509",
   "scripts": {
@@ -17,6 +17,7 @@
     "axios": "^1.8.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
+    "emoji-picker-react": "^4.12.2",
     "fast-csv": "^5.0.2",
     "plasmo": "0.90.3",
     "react": "18.2.0",
@@ -50,7 +51,9 @@
       "activeTab",
       "scripting",
       "tabs",
-      "storage"
+      "storage",
+      "notifications",
+      "alarms"
     ],
     "host_permissions": [
       "<all_urls>"

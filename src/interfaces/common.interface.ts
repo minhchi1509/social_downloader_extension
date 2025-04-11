@@ -16,3 +16,5 @@ export interface IGetListResponse<T> {
     nextCursor: string
   }
 }
+
+export type TTheme = "light" | "dark"

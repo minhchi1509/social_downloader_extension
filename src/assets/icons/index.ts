@@ -6,6 +6,9 @@ import GithubIcon from "react:./github.svg"
 import InstagramIcon from "react:./instagram.svg"
 import LogoIcon from "react:./logo.svg"
 import LogoutIcon from "react:./logout.svg"
+import MoreIcon from "react:./more.svg"
+import SettingIcon from "react:./setting.svg"
+import ThemeModeIcon from "react:./theme-mode.svg"
 import ThreadsIcon from "react:./threads.svg"
 import UserIcon from "react:./user.svg"
 import XIcon from "react:./x.svg"
@@ -21,5 +24,8 @@ export {
   DownloadIcon,
   UserIcon,
   LogoIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
+  MoreIcon,
+  ThemeModeIcon,
+  SettingIcon
 }

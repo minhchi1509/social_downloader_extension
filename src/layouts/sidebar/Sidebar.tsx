@@ -9,6 +9,7 @@ import {
   FacebookIcon,
   InstagramIcon,
   LogoIcon,
+  SettingIcon,
   ThreadsIcon,
   UserIcon,
   XIcon
@@ -56,6 +57,11 @@ const menuItems: MenuItem[] = [
     key: APP_ROUTES.ACCOUNTS, // Đặt key là pathname của trang tài khoản
     icon: <UserIcon className="size-4" />,
     label: <Link to={APP_ROUTES.ACCOUNTS}>Tài Khoản</Link>
+  },
+  {
+    key: APP_ROUTES.SETTINGS,
+    icon: <SettingIcon className="size-4" />,
+    label: <Link to={APP_ROUTES.SETTINGS}>Cài đặt</Link>
   }
 ]
 
@@ -80,7 +86,7 @@ const Sidebar = () => {
       width={256}>
       <div className="p-4 flex items-center gap-3">
         <LogoIcon className="size-10" />
-        {!collapsed && <h1 className="font-bold text-lg">Social Downloader</h1>}
+        {!collapsed && <p className="font-bold text-lg">Social Downloader</p>}
       </div>
 
       <Menu

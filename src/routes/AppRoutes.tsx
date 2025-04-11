@@ -8,6 +8,7 @@ import InstagramDownloadAllPage from "src/pages/download-all/InstagramDownloadAl
 import ThreadsDownloadAllPage from "src/pages/download-all/ThreadsDownloadAllPage"
 import XDownloadAllPage from "src/pages/download-all/XDownloadAllPage"
 import DownloadSeperatePage from "src/pages/download-seperate/DownloadSeperatePage"
+import SettingPage from "src/pages/setting/SettingPage"
 
 const AppRoutes = () => {
   return (
@@ -38,6 +39,7 @@ const AppRoutes = () => {
           path={APP_ROUTES.DOWNLOAD_SEPERATE}
           element={<DownloadSeperatePage />}
         />
+        <Route path={APP_ROUTES.SETTINGS} element={<SettingPage />} />
       </Route>
     </Routes>
   )

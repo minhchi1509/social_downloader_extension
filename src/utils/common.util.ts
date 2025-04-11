@@ -1,8 +1,9 @@
 import { format } from "@fast-csv/format"
+import axios from "axios"
 import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-import { ESocialProvider } from "src/constants/enum"
+import { ESocialProvider, EStorageKey } from "src/constants/enum"
 import useAuth from "src/store/auth"
 import useDownloadProcesses from "src/store/download-process"
 import { chromeUtils } from "src/utils/chrome.util"
@@ -92,4 +93,76 @@ export const isVerifyAccount = (socialName: ESocialProvider) => {
     return false
   }
   return true
+}
+
+export const makeRequestToFacebookFromContent = async (
+  docID: string,
+  query: any
+) => {
+  const { data: rawData } = await axios.get("https://www.facebook.com", {
+    headers: {
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7"
+    }
+  })
+  const profileRegex = /"story_bucket_owner":(.*?),"story_bucket_type":/
+  const fbDtsgRegex = /"DTSGInitialData".*?"token":"(.*?)"/
+  const originalProfileInfor = rawData.match(profileRegex)
+  const fbDtsg = rawData.match(fbDtsgRegex)?.[1]
+  if (!originalProfileInfor || !fbDtsg) {
+    throw new Error("Không thể lấy thông tin người dùng")
+  }
+  const profileInfor = JSON.parse(originalProfileInfor[1])
+  const profileId = profileInfor.id
+  const formData = new FormData()
+  formData.set("__a", "1")
+  formData.set("__comet_req", "15")
+  formData.set("fb_dtsg", fbDtsg)
+  formData.set("av", profileId)
+  formData.set("doc_id", docID)
+  formData.set("variables", JSON.stringify(query))
+  const { data: responseData } = await axios.post(
+    "https://www.facebook.com/api/graphql",
+    formData
+  )
+  return responseData
+}
+
+export const checkExtensionVersion = async () => {
+  const notificationId = "update-notification"
+  const { version: currentVersion } = chrome.runtime.getManifest()
+  const { data } = await axios.get(
+    "https://raw.githubusercontent.com/minhchi1509/social_downloader_extension/main/package.json"
+  )
+  const latestVersion = data.version
+  const notifyLatestExtensionVersion = await chromeUtils.getStorage(
+    EStorageKey.NOTIFY_LATEST_EXTENSION_VERSION
+  )
+  if (notifyLatestExtensionVersion === latestVersion) {
+    return
+  }
+  if (currentVersion !== latestVersion) {
+    await chromeUtils.setStorage(
+      EStorageKey.NOTIFY_LATEST_EXTENSION_VERSION,
+      latestVersion
+    )
+    chrome.notifications.create(notificationId, {
+      type: "basic",
+      iconUrl:
+        "https://raw.githubusercontent.com/minhchi1509/social_downloader_extension/main/assets/icon.png",
+      title: "🎉 Social Downloader đã có phiên bản mới!",
+      message: `Vui lòng cập nhật để tận hưởng các tính năng và cải tiến mới nhất.`
+    })
+    await chromeUtils.setStorage(
+      EStorageKey.NOTIFY_LATEST_EXTENSION_VERSION,
+      latestVersion
+    )
+  }
+  chrome.notifications.onClicked.addListener((clickedId) => {
+    if (clickedId === notificationId) {
+      chrome.tabs.create({
+        url: "https://github.com/minhchi1509/social_downloader_extension/"
+      })
+    }
+  })
 }

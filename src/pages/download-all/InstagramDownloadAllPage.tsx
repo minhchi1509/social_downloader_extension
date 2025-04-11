@@ -1,5 +1,6 @@
+import { Card } from "antd"
+
 import IgDownloadAllForm from "src/components/features/download-all/instagram/IgDownloadAllForm"
-import { Card, CardContent } from "src/components/shared/Card"
 import PageContainer from "src/components/shared/PageContainer"
 
 const InstagramDownloadAllPage = () => {
@@ -7,10 +8,8 @@ const InstagramDownloadAllPage = () => {
     <PageContainer
       title="Tải xuống hàng loạt Instagram"
       className="flex flex-col">
-      <Card className="bg-white flex-1">
-        <CardContent className="p-6">
-          <IgDownloadAllForm />
-        </CardContent>
+      <Card className="flex-1 shadow border rounded-xl">
+        <IgDownloadAllForm />
       </Card>
     </PageContainer>
   )

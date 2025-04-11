@@ -10,6 +10,7 @@ const Footer = () => {
       </Typography>
       <div className="flex gap-1 items-center">
         <a
+          className="text-inherit"
           href="https://github.com/minhchi1509/social_downloader_extension"
           target="_blank">
           <GithubIcon className="size-6" />

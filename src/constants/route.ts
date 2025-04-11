@@ -6,5 +6,6 @@ export const APP_ROUTES = {
     THREADS: "/download-all/threads",
     X: "/download-all/x"
   },
-  DOWNLOAD_SEPERATE: "/download-seperate"
+  DOWNLOAD_SEPERATE: "/download-seperate",
+  SETTINGS: "/settings"
 }
