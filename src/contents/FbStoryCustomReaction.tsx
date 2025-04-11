@@ -1,6 +1,6 @@
 import { StyleProvider } from "@ant-design/cssinjs"
 import { Button, ConfigProvider, Popover, theme } from "antd"
-import cssText from "data-text:./styles.scss"
+import cssText from "data-text:./fb-story-custom-reaction.scss"
 import antdResetCssText from "data-text:antd/dist/reset.css"
 import globalCssText from "data-text:src/style.css"
 import { PlasmoCSConfig, PlasmoCSUIJSXContainer, PlasmoRender } from "plasmo"
@@ -13,7 +13,8 @@ import CustomReactionBox from "src/components/contents/CustomReactionBox"
 import "src/components/contents/ContentToaster"
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://www.facebook.com/*"]
+  matches: ["https://www.facebook.com/*"],
+  all_frames: true
 }
 
 const CONTAINER_ID = "engage-csui-container"
