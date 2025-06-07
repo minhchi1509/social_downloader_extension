@@ -20,4 +20,4 @@
 - Ở phía Sidebar bên trái, chọn **Tài khoản**, sau đó thực hiện xác thực các tài khoản để sử dụng các tính năng tải.
 
 > [!TIP]
-> Nếu mọi người thấy extension hữu ích, hãy ủng hộ em/mình bằng 1 sao trên repo này hoặc nếu mọi người có nhu cầu donate thì thông qua STK: 1500206139515 (Agribank) - NGUYEN MINH CHI. Em xin cảm ơn
+> Nếu mọi người thấy extension hữu ích, hãy ủng hộ em/mình bằng 1 sao trên repo này hoặc nếu mọi người có nhu cầu donate thì thông qua STK: 908815092002 (Techcombank) - NGUYEN MINH CHI. Em xin cảm ơn
