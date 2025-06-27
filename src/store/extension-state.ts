@@ -5,8 +5,6 @@ import { TTheme } from "src/interfaces/common.interface"
 import { chromeUtils } from "src/utils/chrome.util"
 
 interface IExtensionState {
-  currentVersion: string
-  isUpdateAvailable: boolean
   theme: TTheme
 }
 
@@ -18,8 +16,6 @@ interface IExtensionStateStore {
 
 const useExtensionState = create<IExtensionStateStore>((set) => ({
   extensionState: {
-    currentVersion: "",
-    isUpdateAvailable: false,
     theme: "light"
   },
   setExtensionState: (newState) => {

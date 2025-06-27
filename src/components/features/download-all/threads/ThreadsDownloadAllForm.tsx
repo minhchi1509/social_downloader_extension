@@ -10,6 +10,7 @@ import {
   Tag
 } from "antd"
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,9 +18,8 @@ import { ESocialProvider } from "src/constants/enum"
 import { APP_ROUTES } from "src/constants/route"
 import {
   DOWNLOAD_TYPE_TAG_COLOR,
-  PROCESS_STATUS_TAG_COLOR,
-  PROCESS_TEXT,
-  THREADS_DOWNLOAD_ALL_TYPE
+  getThreadsDownloadAllTypeOptions,
+  PROCESS_STATUS_TAG_COLOR
 } from "src/constants/variables"
 import useDownloadThreadsPost from "src/hooks/threads/useDownloadThreadsPost"
 import {
@@ -33,6 +33,7 @@ import { isVerifyAccount } from "src/utils/common.util"
 import { showErrorToast } from "src/utils/toast.util"
 
 const ThreadsDownloadAllForm = () => {
+  const { t } = useTranslation()
   const { removeProcess, addProcess, getDownloadProcessBySocial } =
     useDownloadProcesses()
   const [form] = Form.useForm<IThreadsDownloadAllForm>()
@@ -46,9 +47,7 @@ const ThreadsDownloadAllForm = () => {
   const handleSubmit = async (values: IThreadsDownloadAllForm) => {
     try {
       if (!isVerifyAccount(ESocialProvider.THREADS)) {
-        throw new Error(
-          "Vui lòng xác thực tài khoản Threads trước khi tải xuống!"
-        )
+        throw new Error(t("alerts.authenticate_threads"))
       }
       const processId = uuidv4()
       addProcess(ESocialProvider.THREADS, {
@@ -71,14 +70,14 @@ const ThreadsDownloadAllForm = () => {
   > = useMemo(
     () => [
       {
-        title: "STT",
+        title: t("table_headers.no"),
         dataIndex: "ordinalNumber",
         key: "ordinalNumber",
         width: 70,
         render: (_, __, index) => index + 1
       },
       {
-        title: "Loại tải",
+        title: t("table_headers.download_type"),
         dataIndex: "downloadType",
         key: "downloadType",
         render: (downloadType: TThreadsDownloadAllType) => (
@@ -88,7 +87,7 @@ const ThreadsDownloadAllForm = () => {
         )
       },
       {
-        title: "Username",
+        title: t("table_headers.username"),
         dataIndex: "username",
         key: "username",
         render: (username: string) => (
@@ -96,22 +95,24 @@ const ThreadsDownloadAllForm = () => {
         )
       },
       {
-        title: "Số lượng đã tải",
+        title: t("table_headers.downloaded_count"),
         dataIndex: "totalDownloadedItems",
         key: "totalDownloadedItems"
       },
       {
-        title: "Trạng thái",
+        title: t("table_headers.status"),
         dataIndex: "status",
         key: "status",
         render: (status: TProcessStatus) => (
           <Tag color={PROCESS_STATUS_TAG_COLOR[status]}>
-            {PROCESS_TEXT[status]}
+            {t(
+              `status.${status === "RUNNING" ? "running" : status === "COMPLETED" ? "completed" : "failed"}`
+            )}
           </Tag>
         )
       },
       {
-        title: "Hành động",
+        title: t("table_headers.actions"),
         key: "action",
         render: (record: IDownloadProcessDetail<TThreadsDownloadAllType>) =>
           record.status === "RUNNING" ? (
@@ -119,12 +120,12 @@ const ThreadsDownloadAllForm = () => {
               type="primary"
               danger
               onClick={() => removeProcess(ESocialProvider.THREADS, record.id)}>
-              Hủy
+              {t("actions.cancel")}
             </Button>
           ) : null
       }
     ],
-    []
+    [t]
   )
 
   return (
@@ -133,11 +134,11 @@ const ThreadsDownloadAllForm = () => {
         className="mb-3"
         message={
           <div>
-            Hãy đảm bảo rằng bạn đã xác thực tài khoản Threads (
+            {t("alerts.authenticate_threads")} (
             <span>
-              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+              <Link to={APP_ROUTES.ACCOUNTS}>{t("alerts.here")}</Link>
             </span>
-            ) trước khi sử dụng các tính năng dưới đây!
+            )
           </div>
         }
         type="warning"
@@ -153,18 +154,18 @@ const ThreadsDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IThreadsDownloadAllForm>
-            label="Loại tải:"
+            label={t("form_labels.download_type")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn loại tải!"
+                message: t("form_placeholders.select_download_type")
               }
             ]}
             initialValue="POST"
             style={{ flex: 1 }}>
             <Select>
-              {THREADS_DOWNLOAD_ALL_TYPE.map((v) => (
+              {getThreadsDownloadAllTypeOptions(t).map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>
@@ -172,10 +173,10 @@ const ThreadsDownloadAllForm = () => {
             </Select>
           </Form.Item>
           <Form.Item<IThreadsDownloadAllForm>
-            label="Username:"
+            label={t("form_labels.username")}
             name="username"
             rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
+              { required: true, message: t("form_placeholders.enter_username") }
             ]}
             style={{ flex: 1 }}>
             <Input />
@@ -183,42 +184,42 @@ const ThreadsDownloadAllForm = () => {
         </div>
         <div className="flex gap-3 items-center">
           <Form.Item<IThreadsDownloadAllForm>
-            label="Tùy chọn tải xuống:"
+            label={t("form_labels.download_options")}
             name="isMergeIntoOneFolder"
             initialValue={false}
             style={{ flex: 8 }}>
             <Select>
               <Select.Option value={false}>
-                Tạo riêng thư mục cho từng bài viết
+                {t("download_options.separate_folders")}
               </Select.Option>
               <Select.Option value={true}>
-                Gộp ảnh và video vào chung một thư mục
+                {t("download_options.merge_into_one")}
               </Select.Option>
             </Select>
           </Form.Item>
           <Form.Item<IThreadsDownloadAllForm>
-            label="Tùy chọn cho tiến trình tải:"
+            label={t("form_labels.delay_options")}
             name="waitUntilCompleted"
             initialValue={true}
             style={{ flex: 8 }}>
             <Select>
               <Select.Option value={true}>
-                Chờ đợi cho đến khi lượt tải xuống trước đó hoàn thành
+                {t("download_options.wait_until_completed")}
               </Select.Option>
               <Select.Option value={false}>
-                Thiết lập thời gian delay giữa các lần tải
+                {t("download_options.set_delay")}
               </Select.Option>
             </Select>
           </Form.Item>
           {!isWaitUntilCompleted ? (
             <Form.Item<IThreadsDownloadAllForm>
-              label="Thời gian delay:"
+              label={t("form_labels.delay_time")}
               name="delayTimeInSecond"
               initialValue={0}
               style={{ flex: 3 }}>
               <InputNumber
                 min={0}
-                addonAfter="giây"
+                addonAfter={t("time_units.seconds")}
                 style={{
                   width: "100%"
                 }}
@@ -229,7 +230,7 @@ const ThreadsDownloadAllForm = () => {
 
         <Form.Item wrapperCol={{ span: 24 }}>
           <Button type="primary" htmlType="submit">
-            Tải
+            {t("actions.download")}
           </Button>
         </Form.Item>
       </Form>

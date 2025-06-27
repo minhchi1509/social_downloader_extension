@@ -10,6 +10,7 @@ import {
   Tag
 } from "antd"
 import { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,9 +18,8 @@ import { ESocialProvider } from "src/constants/enum"
 import { APP_ROUTES } from "src/constants/route"
 import {
   DOWNLOAD_TYPE_TAG_COLOR,
-  PROCESS_STATUS_TAG_COLOR,
-  PROCESS_TEXT,
-  X_DOWNLOAD_ALL_TYPE
+  getXDownloadAllTypeOptions,
+  PROCESS_STATUS_TAG_COLOR
 } from "src/constants/variables"
 import useDownloadXMedia from "src/hooks/x/useDownloadXMedia"
 import {
@@ -33,6 +33,7 @@ import { isVerifyAccount } from "src/utils/common.util"
 import { showErrorToast } from "src/utils/toast.util"
 
 const XDownloadAllForm = () => {
+  const { t } = useTranslation()
   const { removeProcess, addProcess, getDownloadProcessBySocial } =
     useDownloadProcesses()
   const [form] = Form.useForm<IXDownloadAllForm>()
@@ -44,7 +45,7 @@ const XDownloadAllForm = () => {
   const handleSubmit = async (values: IXDownloadAllForm) => {
     try {
       if (!isVerifyAccount(ESocialProvider.X)) {
-        throw new Error("Vui lòng xác thực tài khoản X trước khi tải xuống!")
+        throw new Error(t("error_messages.authenticate_x_first"))
       }
       const processId = uuidv4()
       addProcess(ESocialProvider.X, {
@@ -67,14 +68,14 @@ const XDownloadAllForm = () => {
   > = useMemo(
     () => [
       {
-        title: "STT",
+        title: t("table_headers.no"),
         dataIndex: "ordinalNumber",
         key: "ordinalNumber",
         width: 70,
         render: (_, __, index) => index + 1
       },
       {
-        title: "Loại tải",
+        title: t("table_headers.download_type"),
         dataIndex: "downloadType",
         key: "downloadType",
         render: (downloadType: TXDownloadAllType) => (
@@ -84,7 +85,7 @@ const XDownloadAllForm = () => {
         )
       },
       {
-        title: "Username",
+        title: t("table_headers.username"),
         dataIndex: "username",
         key: "username",
         render: (username: string) => (
@@ -92,22 +93,24 @@ const XDownloadAllForm = () => {
         )
       },
       {
-        title: "Số lượng đã tải",
+        title: t("table_headers.downloaded_count"),
         dataIndex: "totalDownloadedItems",
         key: "totalDownloadedItems"
       },
       {
-        title: "Trạng thái",
+        title: t("table_headers.status"),
         dataIndex: "status",
         key: "status",
         render: (status: TProcessStatus) => (
           <Tag color={PROCESS_STATUS_TAG_COLOR[status]}>
-            {PROCESS_TEXT[status]}
+            {t(
+              `status.${status === "RUNNING" ? "running" : status === "COMPLETED" ? "completed" : "failed"}`
+            )}
           </Tag>
         )
       },
       {
-        title: "Hành động",
+        title: t("table_headers.actions"),
         key: "action",
         render: (record: IDownloadProcessDetail<TXDownloadAllType>) =>
           record.status === "RUNNING" ? (
@@ -115,12 +118,12 @@ const XDownloadAllForm = () => {
               type="primary"
               danger
               onClick={() => removeProcess(ESocialProvider.X, record.id)}>
-              Hủy
+              {t("actions.cancel")}
             </Button>
           ) : null
       }
     ],
-    []
+    [t]
   )
 
   return (
@@ -129,11 +132,11 @@ const XDownloadAllForm = () => {
         className="mb-3"
         message={
           <div>
-            Hãy đảm bảo rằng bạn đã xác thực tài khoản X (
+            {t("alerts.authenticate_x")} (
             <span>
-              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+              <Link to={APP_ROUTES.ACCOUNTS}>{t("alerts.here")}</Link>
             </span>
-            ) trước khi sử dụng các tính năng dưới đây!
+            )
           </div>
         }
         type="warning"
@@ -149,18 +152,18 @@ const XDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IXDownloadAllForm>
-            label="Loại tải:"
+            label={t("form_labels.download_type")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn loại tải!"
+                message: t("form_placeholders.select_download_type")
               }
             ]}
             initialValue="MEDIA"
             style={{ flex: 4 }}>
             <Select>
-              {X_DOWNLOAD_ALL_TYPE.map((v) => (
+              {getXDownloadAllTypeOptions(t).map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>
@@ -168,37 +171,37 @@ const XDownloadAllForm = () => {
             </Select>
           </Form.Item>
           <Form.Item<IXDownloadAllForm>
-            label="Username:"
+            label={t("form_labels.username")}
             name="username"
             rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng!" }
+              { required: true, message: t("form_placeholders.enter_username") }
             ]}
             style={{ flex: 8 }}>
             <Input addonBefore="https://x.com/" />
           </Form.Item>
           <Form.Item<IXDownloadAllForm>
-            label="Tùy chọn cho tiến trình tải:"
+            label={t("form_labels.delay_options")}
             name="waitUntilCompleted"
             initialValue={true}
             style={{ flex: 8 }}>
             <Select>
               <Select.Option value={true}>
-                Chờ đợi cho đến khi lượt tải xuống trước đó hoàn thành
+                {t("download_options.wait_until_completed")}
               </Select.Option>
               <Select.Option value={false}>
-                Thiết lập thời gian delay giữa các lần tải
+                {t("download_options.set_delay")}
               </Select.Option>
             </Select>
           </Form.Item>
           {!isWaitUntilCompleted ? (
             <Form.Item<IXDownloadAllForm>
-              label="Thời gian delay:"
+              label={t("form_labels.delay_time")}
               name="delayTimeInSecond"
               initialValue={0}
               style={{ flex: 3 }}>
               <InputNumber
                 min={0}
-                addonAfter="giây"
+                addonAfter={t("time_units.seconds")}
                 style={{
                   width: "100%"
                 }}
@@ -209,7 +212,7 @@ const XDownloadAllForm = () => {
 
         <Form.Item wrapperCol={{ span: 24 }}>
           <Button type="primary" htmlType="submit">
-            Tải
+            {t("actions.download")}
           </Button>
         </Form.Item>
       </Form>

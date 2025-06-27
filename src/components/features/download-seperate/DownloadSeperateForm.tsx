@@ -1,10 +1,11 @@
 import { Alert, Button, Form, Input, Select } from "antd"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 
 import { EDownloadSeperateType } from "src/constants/enum"
 import { APP_ROUTES } from "src/constants/route"
-import { DOWNLOAD_SEPERATE_TYPE_OPTIONS } from "src/constants/variables"
+import { getDownloadSeperateTypeOptions } from "src/constants/variables"
 import { IDownloadSeperateForm } from "src/interfaces/form.interface"
 import {
   downloadFbCommentVideo,
@@ -41,6 +42,7 @@ const downloadSeperateFunction = {
 }
 
 const DownloadSeperateForm = () => {
+  const { t } = useTranslation()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [form] = Form.useForm<IDownloadSeperateForm>()
 
@@ -48,7 +50,7 @@ const DownloadSeperateForm = () => {
     try {
       setIsSubmitting(true)
       await downloadSeperateFunction[values.type](values.url)
-      showSuccessToast("Tải xuống thành công!")
+      showSuccessToast(t("alerts.download_success"))
     } catch (error) {
       showErrorToast((error as Error).message)
     } finally {
@@ -62,12 +64,11 @@ const DownloadSeperateForm = () => {
         className="mb-3"
         message={
           <div>
-            Hãy đảm bảo rằng bạn đã xác thực tài khoản
-            Facebook/Instagram/Threads/X (
+            {t("alerts.authenticate_all")} (
             <span>
-              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+              <Link to={APP_ROUTES.ACCOUNTS}>{t("alerts.here")}</Link>
             </span>
-            ) trước khi sử dụng các tính năng tương ứng dưới đây!
+            )
           </div>
         }
         type="warning"
@@ -84,13 +85,16 @@ const DownloadSeperateForm = () => {
         <div className="flex gap-3 items-center">
           <Form.Item<IDownloadSeperateForm>
             style={{ flex: 1 }}
-            label="Loại:"
+            label={t("form_labels.download_type")}
             name="type"
             rules={[
-              { required: true, message: "Vui lòng chọn loại tải xuống!" }
+              {
+                required: true,
+                message: t("form_placeholders.select_download_type")
+              }
             ]}>
             <Select>
-              {DOWNLOAD_SEPERATE_TYPE_OPTIONS.map((group) => (
+              {getDownloadSeperateTypeOptions(t).map((group) => (
                 <OptGroup key={group.group} label={group.group}>
                   {group.options.map((option) => (
                     <Option key={option.value} value={option.value}>
@@ -103,15 +107,17 @@ const DownloadSeperateForm = () => {
           </Form.Item>
           <Form.Item<IDownloadSeperateForm>
             style={{ flex: 1 }}
-            label="Đường dẫn:"
+            label={t("form_labels.url")}
             name="url"
-            rules={[{ required: true, message: "Vui lòng nhập đường dẫn!" }]}>
+            rules={[
+              { required: true, message: t("form_placeholders.enter_url") }
+            ]}>
             <Input />
           </Form.Item>
         </div>
         <Form.Item wrapperCol={{ span: 24 }}>
           <Button type="primary" htmlType="submit" loading={isSubmitting}>
-            Tải
+            {t("actions.download")}
           </Button>
         </Form.Item>
       </Form>

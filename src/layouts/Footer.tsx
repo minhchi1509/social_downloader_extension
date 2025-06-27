@@ -1,12 +1,15 @@
 import { Typography } from "antd"
+import { useTranslation } from "react-i18next"
 
 import { FacebookIcon, GithubIcon } from "src/assets/icons"
 
 const Footer = () => {
+  const { t } = useTranslation()
+
   return (
     <div className="flex gap-2 mx-auto items-center justify-center">
       <Typography>
-        Made by <span className="font-bold">minhchi1509</span>
+        {t("footer.made_by")} <span className="font-bold">minhchi1509</span>
       </Typography>
       <div className="flex gap-1 items-center">
         <a

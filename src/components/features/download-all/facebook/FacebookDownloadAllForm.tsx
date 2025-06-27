@@ -10,6 +10,7 @@ import {
   Tag
 } from "antd"
 import { useEffect, useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
@@ -18,9 +19,8 @@ import { ESocialProvider } from "src/constants/enum"
 import { APP_ROUTES } from "src/constants/route"
 import {
   DOWNLOAD_TYPE_TAG_COLOR,
-  FB_DOWNLOAD_ALL_TYPE,
-  PROCESS_STATUS_TAG_COLOR,
-  PROCESS_TEXT
+  getFbDownloadAllTypeOptions,
+  PROCESS_STATUS_TAG_COLOR
 } from "src/constants/variables"
 import useDownloadFbAlbum from "src/hooks/facebook/useDownloadFbAlbum"
 import useDownloadFbHighlight from "src/hooks/facebook/useDownloadFbHighlight"
@@ -40,6 +40,7 @@ import { isVerifyAccount } from "src/utils/common.util"
 import { showErrorToast } from "src/utils/toast.util"
 
 const FacebookDownloadAllForm = () => {
+  const { t } = useTranslation()
   const { getDownloadProcessBySocial, removeProcess, addProcess } =
     useDownloadProcesses()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -79,9 +80,7 @@ const FacebookDownloadAllForm = () => {
     try {
       setIsSubmitting(true)
       if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-        throw new Error(
-          "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
-        )
+        throw new Error(t("alerts.authenticate_facebook"))
       }
       let id = values.username
       if (values.type !== "ALBUM_BY_ID") {
@@ -110,14 +109,14 @@ const FacebookDownloadAllForm = () => {
   > = useMemo(
     () => [
       {
-        title: "STT",
+        title: t("table_headers.no"),
         dataIndex: "ordinalNumber",
         key: "ordinalNumber",
         width: 70,
         render: (_, __, index) => index + 1
       },
       {
-        title: "Loại tải",
+        title: t("table_headers.download_type"),
         dataIndex: "downloadType",
         key: "downloadType",
         render: (downloadType: TIgDownloadAllType) => (
@@ -127,7 +126,7 @@ const FacebookDownloadAllForm = () => {
         )
       },
       {
-        title: "ID",
+        title: t("table_headers.id"),
         dataIndex: "username",
         key: "username",
         render: (username: string) => (
@@ -135,22 +134,24 @@ const FacebookDownloadAllForm = () => {
         )
       },
       {
-        title: "Số lượng đã tải",
+        title: t("table_headers.downloaded_count"),
         dataIndex: "totalDownloadedItems",
         key: "totalDownloadedItems"
       },
       {
-        title: "Trạng thái",
+        title: t("table_headers.status"),
         dataIndex: "status",
         key: "status",
         render: (status: TProcessStatus) => (
           <Tag color={PROCESS_STATUS_TAG_COLOR[status]}>
-            {PROCESS_TEXT[status]}
+            {t(
+              `status.${status === "RUNNING" ? "running" : status === "COMPLETED" ? "completed" : "failed"}`
+            )}
           </Tag>
         )
       },
       {
-        title: "Hành động",
+        title: t("table_headers.actions"),
         key: "action",
         render: (record: IDownloadProcessDetail<TFacebookDownloadAllType>) =>
           record.status === "RUNNING" ? (
@@ -160,12 +161,12 @@ const FacebookDownloadAllForm = () => {
               onClick={() =>
                 removeProcess(ESocialProvider.FACEBOOK, record.id)
               }>
-              Hủy
+              {t("actions.cancel")}
             </Button>
           ) : null
       }
     ],
-    []
+    [t]
   )
 
   useEffect(() => {
@@ -178,11 +179,11 @@ const FacebookDownloadAllForm = () => {
         className="mb-3"
         message={
           <div>
-            Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook (
+            {t("alerts.authenticate_facebook")} (
             <span>
-              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+              <Link to={APP_ROUTES.ACCOUNTS}>{t("alerts.here")}</Link>
             </span>
-            ) trước khi sử dụng các tính năng dưới đây!
+            )
           </div>
         }
         type="warning"
@@ -203,32 +204,36 @@ const FacebookDownloadAllForm = () => {
         }}>
         <div className="flex gap-3 items-center">
           <Form.Item<IFacebookDownloadAllForm>
-            label="Đối tượng:"
+            label={t("form_labels.target")}
             name="target"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn đối tượng!"
+                message: t("form_placeholders.select_target")
               }
             ]}
             style={{ flex: 1 }}>
             <Select>
-              <Select.Option value="PROFILE">Người dùng</Select.Option>
-              <Select.Option value="GROUP">Nhóm</Select.Option>
+              <Select.Option value="PROFILE">
+                {t("download_targets.profile")}
+              </Select.Option>
+              <Select.Option value="GROUP">
+                {t("download_targets.group")}
+              </Select.Option>
             </Select>
           </Form.Item>
           <Form.Item<IFacebookDownloadAllForm>
-            label="Loại tải:"
+            label={t("form_labels.download_type")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn loại tải!"
+                message: t("form_placeholders.select_download_type")
               }
             ]}
             style={{ flex: 1 }}>
             <Select>
-              {FB_DOWNLOAD_ALL_TYPE[target]?.map((v) => (
+              {getFbDownloadAllTypeOptions(t)[target]?.map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>
@@ -238,16 +243,16 @@ const FacebookDownloadAllForm = () => {
           <Form.Item<IFacebookDownloadAllForm>
             label={
               downloadType === "ALBUM_BY_ID"
-                ? "ID Album:"
+                ? t("form_labels.album_id")
                 : target === "PROFILE"
-                  ? "ID/Username người dùng:"
-                  : "ID nhóm:"
+                  ? t("form_labels.id_username")
+                  : t("table_headers.id")
             }
             name="username"
             rules={[
               {
                 required: true,
-                message: `${downloadType === "ALBUM_BY_ID" ? "Vui lòng nhập ID của album" : target === "PROFILE" ? "Vui lòng nhập ID/Username của người dùng" : "Vui lòng nhập ID của nhóm"}!`
+                message: `${downloadType === "ALBUM_BY_ID" ? t("form_placeholders.select_download_type") : target === "PROFILE" ? t("form_placeholders.enter_username") : t("form_placeholders.select_target")}!`
               }
             ]}
             style={{ flex: 1 }}>
@@ -257,41 +262,41 @@ const FacebookDownloadAllForm = () => {
         <div className="flex gap-3 items-center">
           {downloadType === "HIGHLIGHT" ? (
             <Form.Item<IFacebookDownloadAllForm>
-              label="Tùy chọn tải xuống:"
+              label={t("form_labels.download_options")}
               name="isMergeIntoOneFolder"
               initialValue={false}
               style={{ flex: 8 }}>
               <Select>
                 <Select.Option value={false}>
-                  Tạo riêng thư mục cho từng highlight
+                  {t("download_options.separate_folders")}
                 </Select.Option>
                 <Select.Option value={true}>
-                  Gộp ảnh và video vào chung một thư mục
+                  {t("download_options.merge_into_one")}
                 </Select.Option>
               </Select>
             </Form.Item>
           ) : null}
           <Form.Item<IFacebookDownloadAllForm>
-            label="Tùy chọn cho tiến trình tải:"
+            label={t("form_labels.delay_options")}
             name="waitUntilCompleted"
             style={{ flex: 8 }}>
             <Select>
               <Select.Option value={true}>
-                Chờ đợi cho đến khi lượt tải xuống trước đó hoàn thành
+                {t("download_options.wait_until_completed")}
               </Select.Option>
               <Select.Option value={false}>
-                Thiết lập thời gian delay giữa các lần tải
+                {t("download_options.set_delay")}
               </Select.Option>
             </Select>
           </Form.Item>
           {!isWaitUntilCompleted ? (
             <Form.Item<IFacebookDownloadAllForm>
-              label="Thời gian delay:"
+              label={t("form_labels.delay_time")}
               name="delayTimeInSecond"
               style={{ flex: 3 }}>
               <InputNumber
                 min={0}
-                addonAfter="giây"
+                addonAfter={t("time_units.seconds")}
                 style={{
                   width: "100%"
                 }}
@@ -305,7 +310,7 @@ const FacebookDownloadAllForm = () => {
 
         <Form.Item wrapperCol={{ span: 24 }}>
           <Button type="primary" htmlType="submit" loading={isSubmitting}>
-            Tải
+            {t("actions.download")}
           </Button>
         </Form.Item>
       </Form>

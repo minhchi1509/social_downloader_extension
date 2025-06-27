@@ -13,7 +13,7 @@ const CustomReactionBox = () => {
         .querySelector("div.x6s0dn4.x78zum5.x5yr21d.xl56j7k.x1n2onr6.xh8yej3")
         ?.getAttribute("data-id")
       if (!storyID) {
-        showErrorToast("Không tìm thấy story ID")
+        showErrorToast("Story ID not found!")
         return
       }
       const docID = "4826141330837571"
@@ -26,10 +26,10 @@ const CustomReactionBox = () => {
           client_mutation_id: "17"
         }
       }
-      showSuccessToast("Thả cảm xúc story thành công")
+      showSuccessToast("Drop story emotion successfully!")
       await makeRequestToFacebookFromContent(docID, query)
     } catch (error) {
-      showErrorToast("Thả cảm xúc story thất bại")
+      showErrorToast("Drop story emotion failed!")
     }
   }
   return (

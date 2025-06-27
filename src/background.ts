@@ -1,5 +1,4 @@
 import { ERemoteMessageType } from "src/constants/enum"
-import { checkExtensionVersion } from "src/utils/common.util"
 
 chrome.action.onClicked.addListener(() => {
   chrome.runtime.openOptionsPage()
@@ -63,5 +62,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse(xHeadersData)
   }
 })
-
-checkExtensionVersion()

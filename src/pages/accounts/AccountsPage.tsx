@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import {
   FacebookIcon,
   InstagramIcon,
@@ -28,8 +30,10 @@ const SOCIAL_ACCOUNTS = [
 ]
 
 const AccountsPage = () => {
+  const { t } = useTranslation()
+
   return (
-    <PageContainer title="Quản lý tài khoản">
+    <PageContainer title={t("page_titles.accounts")}>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {SOCIAL_ACCOUNTS.map((account) => (
           <CardAccount key={account.socialName} {...account} />

@@ -1,5 +1,6 @@
 import { Avatar, Button, Card } from "antd"
 import { ComponentType, FC, SVGProps, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 import { CheckCircleIcon } from "src/assets/icons"
 import { ESocialProvider } from "src/constants/enum"
@@ -16,6 +17,7 @@ const CardAccount: FC<ICardAccountProps> = ({
   icon: SocialIcon
 }) => {
   const { logout, authenticate, accounts } = useAuth()
+  const { t } = useTranslation()
   const accountDataBySocialName = accounts[socialName]
   const [isAuthenticating, setIsAuthenticating] = useState(false)
 
@@ -41,7 +43,7 @@ const CardAccount: FC<ICardAccountProps> = ({
             {accountDataBySocialName && (
               <div className="flex items-center text-xs text-green-600 font-semibold">
                 <CheckCircleIcon className="h-4 w-4 mr-1" />
-                Đã xác thực
+                {t("status.authenticated")}
               </div>
             )}
           </div>
@@ -56,18 +58,20 @@ const CardAccount: FC<ICardAccountProps> = ({
               />
               <div className="flex flex-col">
                 <p>
-                  <span className="font-bold">ID</span>:{" "}
+                  <span className="font-bold">{t("account_info.id")}</span>:{" "}
                   {accountDataBySocialName.id}
                 </p>
                 <p>
-                  <span className="font-bold">Name</span>:{" "}
+                  <span className="font-bold">{t("account_info.name")}</span>:{" "}
                   {accountDataBySocialName.username}
                 </p>
               </div>
             </div>
           ) : (
             <div className="h-24 flex items-center justify-center">
-              <p className="text-gray-500 text-sm text-center">Chưa xác thực</p>
+              <p className="text-gray-500 text-sm text-center">
+                {t("status.not_authenticated")}
+              </p>
             </div>
           )}
         </div>
@@ -77,7 +81,9 @@ const CardAccount: FC<ICardAccountProps> = ({
             className="w-full"
             type="primary"
             loading={isAuthenticating}>
-            {accountDataBySocialName ? "Xác thực lại" : "Xác thực ngay"}
+            {accountDataBySocialName
+              ? t("actions.authenticate_again")
+              : t("actions.authenticate")}
           </Button>
         </div>
       </div>

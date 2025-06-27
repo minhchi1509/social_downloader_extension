@@ -1,7 +1,7 @@
 {
   "name": "social-downloader",
   "displayName": "Social Downloader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Download Social Media with one click.",
   "author": "minhchi1509",
   "scripts": {
@@ -19,9 +19,12 @@
     "dayjs": "^1.11.13",
     "emoji-picker-react": "^4.12.2",
     "fast-csv": "^5.0.2",
+    "i18next": "^25.2.1",
+    "i18next-browser-languagedetector": "^8.2.0",
     "plasmo": "0.90.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-i18next": "^15.5.3",
     "react-router-dom": "^7.4.0",
     "sonner": "^2.0.1",
     "tailwind-merge": "^3.0.2",

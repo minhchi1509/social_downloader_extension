@@ -1,0 +1,131 @@
+{
+  "greeting": "Hello from JSON file!",
+  "change_language": "Switch to Vietnamese",
+  "sidebar": {
+    "download_all": "Download All",
+    "download_separate": "Download Separate",
+    "accounts": "Accounts",
+    "settings": "Settings",
+    "social_downloader": "Social Downloader"
+  },
+  "page_titles": {
+    "facebook_download_all": "Download All Facebook",
+    "instagram_download_all": "Download All Instagram",
+    "threads_download_all": "Download All Threads",
+    "x_download_all": "Download All X",
+    "download_separate": "Download Separate",
+    "accounts": "Manage Accounts",
+    "settings": "Settings"
+  },
+  "form_labels": {
+    "download_type": "Download Type:",
+    "username": "Username:",
+    "id_username": "ID/Username:",
+    "url": "URL:",
+    "target": "Target:",
+    "download_options": "Download Options:",
+    "delay_options": "Delay Options:",
+    "album_id": "Album ID:",
+    "delay_time": "Delay Time:"
+  },
+  "form_placeholders": {
+    "enter_username": "Please enter username!",
+    "enter_url": "Please enter URL!",
+    "select_download_type": "Please select download type!",
+    "select_target": "Please select target!"
+  },
+  "download_targets": {
+    "profile": "User",
+    "group": "Group"
+  },
+  "download_options": {
+    "separate_folders": "Create separate folder for each post",
+    "merge_into_one": "Merge all media into one folder",
+    "wait_until_completed": "Wait until previous download is complete",
+    "set_delay": "Set delay time between downloads"
+  },
+  "actions": {
+    "download": "Download",
+    "cancel": "Cancel",
+    "update": "Update",
+    "authenticate": "Authenticate",
+    "authenticate_again": "Authenticate again"
+  },
+  "status": {
+    "running": "Running",
+    "completed": "Completed",
+    "failed": "Failed",
+    "authenticated": "Authenticated",
+    "not_authenticated": "Not authenticated"
+  },
+  "table_headers": {
+    "no": "No",
+    "download_type": "Download Type",
+    "username": "Username",
+    "id": "ID",
+    "downloaded_count": "Downloaded Count",
+    "status": "Status",
+    "actions": "Actions"
+  },
+  "alerts": {
+    "authenticate_facebook": "Make sure you have authenticated your Facebook account before using the features below!",
+    "authenticate_instagram": "Make sure you have authenticated your Instagram account before using the features below!",
+    "authenticate_threads": "Make sure you have authenticated your Threads account before using the features below!",
+    "authenticate_x": "Make sure you have authenticated your X account before using the features below!",
+    "authenticate_all": "Make sure you have authenticated your Facebook/Instagram/Threads/X account before using the corresponding features below!",
+    "new_version": "🚀 A new version of Social Downloader is available!",
+    "update_experience": "Please download the latest version for the best experience.",
+    "reaction_success": "Story reaction sent successfully",
+    "reaction_failed": "Failed to send story reaction",
+    "story_id_not_found": "Story ID not found",
+    "here": "Here",
+    "download_success": "Download successful!"
+  },
+  "account_info": {
+    "id": "ID",
+    "name": "Name",
+    "dark_mode": "Dark mode"
+  },
+  "footer": {
+    "made_by": "Made by"
+  },
+  "download_types": {
+    "x": {
+      "media": "Media on profile",
+      "post": "Photos/videos in posts"
+    },
+    "facebook": {
+      "photo": "Photos",
+      "video": "Videos",
+      "reel": "Reels",
+      "highlight": "Highlighted Stories",
+      "album_by_id": "Photo Album (by ID)",
+      "post": "Photos/videos in posts",
+      "story": "Story/Highlight",
+      "comment_video": "Video in comments"
+    },
+    "instagram": {
+      "post": "Photos/videos in posts",
+      "reel": "Reels",
+      "highlight": "Highlighted Stories",
+      "story": "Stories",
+      "post_type": "Post",
+      "highlight_type": "Highlight"
+    },
+    "threads": {
+      "post": "Photos/videos in posts"
+    }
+  },
+  "time_units": {
+    "second": "second",
+    "seconds": "seconds"
+  },
+  "error_messages": {
+    "authenticate_x_first": "Please authenticate your X account before downloading!"
+  },
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "vietnamese": "Vietnamese"
+  }
+}

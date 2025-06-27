@@ -10,6 +10,7 @@ import {
   type TableColumnsType
 } from "antd"
 import { useMemo, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,9 +18,8 @@ import { ESocialProvider } from "src/constants/enum"
 import { APP_ROUTES } from "src/constants/route"
 import {
   DOWNLOAD_TYPE_TAG_COLOR,
-  IG_DOWNLOAD_ALL_TYPE,
-  PROCESS_STATUS_TAG_COLOR,
-  PROCESS_TEXT
+  getIgDownloadAllTypeOptions,
+  PROCESS_STATUS_TAG_COLOR
 } from "src/constants/variables"
 import useDownloadIgActiveStories from "src/hooks/instagram/useDownloadIgActiveStories"
 import useDownloadIgHighlight from "src/hooks/instagram/useDownloadIgHighlight"
@@ -37,6 +37,7 @@ import { isVerifyAccount } from "src/utils/common.util"
 import { showErrorToast } from "src/utils/toast.util"
 
 const IgDownloadAllForm = () => {
+  const { t } = useTranslation()
   const { getDownloadProcessBySocial, removeProcess, addProcess } =
     useDownloadProcess()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -56,9 +57,7 @@ const IgDownloadAllForm = () => {
     try {
       setIsSubmitting(true)
       if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
-        throw new Error(
-          "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
-        )
+        throw new Error(t("alerts.authenticate_instagram"))
       }
       await instagramService.getInstagramIdAndAvatarByUsername(values.username)
       setIsSubmitting(false)
@@ -95,14 +94,14 @@ const IgDownloadAllForm = () => {
   > = useMemo(
     () => [
       {
-        title: "STT",
+        title: t("table_headers.no"),
         dataIndex: "ordinalNumber",
         key: "ordinalNumber",
         width: 70,
         render: (_, __, index) => index + 1
       },
       {
-        title: "Loại tải",
+        title: t("table_headers.download_type"),
         dataIndex: "downloadType",
         key: "downloadType",
         render: (downloadType: TIgDownloadAllType) => (
@@ -112,7 +111,7 @@ const IgDownloadAllForm = () => {
         )
       },
       {
-        title: "Username",
+        title: t("table_headers.username"),
         dataIndex: "username",
         key: "username",
         render: (username: string) => (
@@ -120,22 +119,24 @@ const IgDownloadAllForm = () => {
         )
       },
       {
-        title: "Số lượng đã tải",
+        title: t("table_headers.downloaded_count"),
         dataIndex: "totalDownloadedItems",
         key: "totalDownloadedItems"
       },
       {
-        title: "Trạng thái",
+        title: t("table_headers.status"),
         dataIndex: "status",
         key: "status",
         render: (status: TProcessStatus) => (
           <Tag color={PROCESS_STATUS_TAG_COLOR[status]}>
-            {PROCESS_TEXT[status]}
+            {t(
+              `status.${status === "RUNNING" ? "running" : status === "COMPLETED" ? "completed" : "failed"}`
+            )}
           </Tag>
         )
       },
       {
-        title: "Hành động",
+        title: t("table_headers.actions"),
         key: "action",
         render: (record: IDownloadProcessDetail<TIgDownloadAllType>) =>
           record.status === "RUNNING" ? (
@@ -145,7 +146,7 @@ const IgDownloadAllForm = () => {
               onClick={() =>
                 removeProcess(ESocialProvider.INSTAGRAM, record.id)
               }>
-              Hủy
+              {t("actions.cancel")}
             </Button>
           ) : null
       }
@@ -159,11 +160,10 @@ const IgDownloadAllForm = () => {
         className="mb-3"
         message={
           <div>
-            Hãy đảm bảo rằng bạn đã xác thực tài khoản Instagram (
+            {t("alerts.authenticate_instagram")}{" "}
             <span>
-              <Link to={APP_ROUTES.ACCOUNTS}>tại đây</Link>
+              <Link to={APP_ROUTES.ACCOUNTS}>{t("alerts.here")}</Link>
             </span>
-            ) trước khi sử dụng các tính năng dưới đây!
           </div>
         }
         type="warning"
@@ -179,17 +179,17 @@ const IgDownloadAllForm = () => {
         labelAlign="left">
         <div className="flex gap-3 items-center">
           <Form.Item<IIgDownloadAllForm>
-            label="Loại tải:"
+            label={t("form_labels.download_type")}
             name="type"
             rules={[
               {
                 required: true,
-                message: "Vui lòng chọn loại tải!"
+                message: t("form_placeholders.select_download_type")
               }
             ]}
             style={{ flex: 4 }}>
             <Select>
-              {IG_DOWNLOAD_ALL_TYPE.map((v) => (
+              {getIgDownloadAllTypeOptions(t).map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>
@@ -197,9 +197,11 @@ const IgDownloadAllForm = () => {
             </Select>
           </Form.Item>
           <Form.Item<IIgDownloadAllForm>
-            label="Username:"
+            label={t("form_labels.username")}
             name="username"
-            rules={[{ required: true, message: "Vui lòng nhập username!" }]}
+            rules={[
+              { required: true, message: t("form_placeholders.enter_username") }
+            ]}
             style={{ flex: 4 }}>
             <Input />
           </Form.Item>
@@ -207,44 +209,46 @@ const IgDownloadAllForm = () => {
         <div className="flex gap-3 items-center">
           {downloadType === "POST" || downloadType === "HIGHLIGHT" ? (
             <Form.Item<IIgDownloadAllForm>
-              label="Tùy chọn tải xuống:"
+              label={t("form_labels.download_options")}
               name="isMergeIntoOneFolder"
               initialValue={false}
               style={{ flex: 8 }}>
               <Select>
                 <Select.Option value={false}>
-                  Tạo riêng thư mục cho từng{" "}
-                  {downloadType === "POST" ? "bài viết" : "hightlight"}
+                  {t("download_options.separate_folders")}{" "}
+                  {downloadType === "POST"
+                    ? t("download_types.instagram.post_type")
+                    : t("download_types.instagram.highlight_type")}
                 </Select.Option>
                 <Select.Option value={true}>
-                  Gộp ảnh và video vào chung một thư mục
+                  {t("download_options.merge_into_one")}
                 </Select.Option>
               </Select>
             </Form.Item>
           ) : null}
           <Form.Item<IIgDownloadAllForm>
-            label="Tùy chọn cho tiến trình tải:"
+            label={t("form_labels.delay_options")}
             name="waitUntilCompleted"
             initialValue={true}
             style={{ flex: 8 }}>
             <Select>
               <Select.Option value={true}>
-                Chờ đợi cho đến khi lượt tải xuống trước đó hoàn thành
+                {t("download_options.wait_until_completed")}
               </Select.Option>
               <Select.Option value={false}>
-                Thiết lập thời gian delay giữa các lần tải
+                {t("download_options.set_delay")}
               </Select.Option>
             </Select>
           </Form.Item>
           {!isWaitUntilCompleted ? (
             <Form.Item<IIgDownloadAllForm>
-              label="Thời gian delay:"
+              label={t("form_labels.delay_time")}
               name="delayTimeInSecond"
               initialValue={0}
               style={{ flex: 3 }}>
               <InputNumber
                 min={0}
-                addonAfter="giây"
+                addonAfter={t("time_units.seconds")}
                 style={{
                   width: "100%"
                 }}
@@ -255,7 +259,7 @@ const IgDownloadAllForm = () => {
 
         <Form.Item wrapperCol={{ span: 24 }}>
           <Button type="primary" htmlType="submit" loading={isSubmitting}>
-            Tải
+            {t("actions.download")}
           </Button>
         </Form.Item>
       </Form>

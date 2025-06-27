@@ -1,5 +1,6 @@
 import { Layout, Menu, MenuProps } from "antd"
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
 
 import "./Sidebar.scss"
@@ -20,54 +21,59 @@ const { Sider } = Layout
 
 type MenuItem = Required<MenuProps>["items"][number]
 
-const menuItems: MenuItem[] = [
-  {
-    key: "download_all",
-    icon: <DownloadIcon className="size-4" />,
-    label: "Tải hàng loạt",
-    children: [
-      {
-        key: APP_ROUTES.DOWNLOAD_ALL.FACEBOOK,
-        icon: <FacebookIcon className="size-4" />,
-        label: <Link to={APP_ROUTES.DOWNLOAD_ALL.FACEBOOK}>Facebook</Link>
-      },
-      {
-        key: APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM,
-        icon: <InstagramIcon className="size-4" />,
-        label: <Link to={APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM}>Instagram</Link>
-      },
-      {
-        key: APP_ROUTES.DOWNLOAD_ALL.THREADS,
-        icon: <ThreadsIcon className="size-4" />,
-        label: <Link to={APP_ROUTES.DOWNLOAD_ALL.THREADS}>Threads</Link>
-      },
-      {
-        key: APP_ROUTES.DOWNLOAD_ALL.X,
-        icon: <XIcon className="size-4" />,
-        label: <Link to={APP_ROUTES.DOWNLOAD_ALL.X}>X</Link>
-      }
-    ]
-  },
-  {
-    key: APP_ROUTES.DOWNLOAD_SEPERATE,
-    icon: <DownloadIcon className="size-4" />,
-    label: <Link to={APP_ROUTES.DOWNLOAD_SEPERATE}>Tải riêng lẻ</Link>
-  },
-  {
-    key: APP_ROUTES.ACCOUNTS, // Đặt key là pathname của trang tài khoản
-    icon: <UserIcon className="size-4" />,
-    label: <Link to={APP_ROUTES.ACCOUNTS}>Tài Khoản</Link>
-  },
-  {
-    key: APP_ROUTES.SETTINGS,
-    icon: <SettingIcon className="size-4" />,
-    label: <Link to={APP_ROUTES.SETTINGS}>Cài đặt</Link>
-  }
-]
-
 const Sidebar = () => {
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
+  const { t } = useTranslation()
+
+  const menuItems: MenuItem[] = [
+    {
+      key: "download_all",
+      icon: <DownloadIcon className="size-4" />,
+      label: t("sidebar.download_all"),
+      children: [
+        {
+          key: APP_ROUTES.DOWNLOAD_ALL.FACEBOOK,
+          icon: <FacebookIcon className="size-4" />,
+          label: <Link to={APP_ROUTES.DOWNLOAD_ALL.FACEBOOK}>Facebook</Link>
+        },
+        {
+          key: APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM,
+          icon: <InstagramIcon className="size-4" />,
+          label: <Link to={APP_ROUTES.DOWNLOAD_ALL.INSTAGRAM}>Instagram</Link>
+        },
+        {
+          key: APP_ROUTES.DOWNLOAD_ALL.THREADS,
+          icon: <ThreadsIcon className="size-4" />,
+          label: <Link to={APP_ROUTES.DOWNLOAD_ALL.THREADS}>Threads</Link>
+        },
+        {
+          key: APP_ROUTES.DOWNLOAD_ALL.X,
+          icon: <XIcon className="size-4" />,
+          label: <Link to={APP_ROUTES.DOWNLOAD_ALL.X}>X</Link>
+        }
+      ]
+    },
+    {
+      key: APP_ROUTES.DOWNLOAD_SEPERATE,
+      icon: <DownloadIcon className="size-4" />,
+      label: (
+        <Link to={APP_ROUTES.DOWNLOAD_SEPERATE}>
+          {t("sidebar.download_separate")}
+        </Link>
+      )
+    },
+    {
+      key: APP_ROUTES.ACCOUNTS,
+      icon: <UserIcon className="size-4" />,
+      label: <Link to={APP_ROUTES.ACCOUNTS}>{t("sidebar.accounts")}</Link>
+    },
+    {
+      key: APP_ROUTES.SETTINGS,
+      icon: <SettingIcon className="size-4" />,
+      label: <Link to={APP_ROUTES.SETTINGS}>{t("sidebar.settings")}</Link>
+    }
+  ]
 
   return (
     <Sider
@@ -86,7 +92,9 @@ const Sidebar = () => {
       width={256}>
       <div className="p-4 flex items-center gap-3">
         <LogoIcon className="size-10" />
-        {!collapsed && <p className="font-bold text-lg">Social Downloader</p>}
+        {!collapsed && (
+          <p className="font-bold text-lg">{t("sidebar.social_downloader")}</p>
+        )}
       </div>
 
       <Menu

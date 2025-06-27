@@ -26,12 +26,7 @@ const InitializeApp: FC<PropsWithChildren> = ({ children }) => {
       const accountsInStorage = await chromeUtils.getStorage<IAccounts>(
         EStorageKey.ACCOUNTS
       )
-      const { data } = await axios.get(
-        "https://raw.githubusercontent.com/minhchi1509/social_downloader_extension/main/package.json"
-      )
-      const extensionLatestVersion = data.version
-      const { version: currentVersion } = chrome.runtime.getManifest()
-      const isUpdateAvailable = currentVersion !== extensionLatestVersion
+
       const theme = await chromeUtils.getStorage<TTheme>(EStorageKey.THEME)
 
       if (accountsInStorage) {
@@ -47,8 +42,6 @@ const InitializeApp: FC<PropsWithChildren> = ({ children }) => {
         }
         updateAccountData(updatedAccounts)
         setExtensionState({
-          isUpdateAvailable,
-          currentVersion: extensionLatestVersion,
           theme: theme || "light"
         })
         document.documentElement.setAttribute("class", theme || "light")

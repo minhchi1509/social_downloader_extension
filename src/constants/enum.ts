@@ -33,3 +33,12 @@ export enum EDownloadSeperateType {
 export enum ERemoteMessageType {
   RETRIEVE_X_ACCOUNT_CREDENTIALS = "RETRIEVE_X_ACCOUNT_CREDENTIALS"
 }
+
+export enum ELocales {
+  VIETNAMESE = "vi",
+  ENGLISH = "en"
+}
+
+export enum ELanguageNamespaces {
+  APP = "app"
+}

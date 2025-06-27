@@ -1,0 +1,131 @@
+{
+  "greeting": "Xin chào từ file JSON!",
+  "change_language": "Chuyển sang tiếng Anh",
+  "sidebar": {
+    "download_all": "Tải hàng loạt",
+    "download_separate": "Tải riêng lẻ",
+    "accounts": "Tài khoản",
+    "settings": "Cài đặt",
+    "social_downloader": "Social Downloader"
+  },
+  "page_titles": {
+    "facebook_download_all": "Tải xuống hàng loạt Facebook",
+    "instagram_download_all": "Tải xuống hàng loạt Instagram",
+    "threads_download_all": "Tải xuống hàng loạt Threads",
+    "x_download_all": "Tải xuống hàng loạt X",
+    "download_separate": "Tải xuống riêng lẻ",
+    "accounts": "Quản lý tài khoản",
+    "settings": "Cài đặt"
+  },
+  "form_labels": {
+    "download_type": "Loại tải:",
+    "username": "Username:",
+    "id_username": "ID/Username người dùng:",
+    "url": "Đường dẫn:",
+    "target": "Đối tượng:",
+    "download_options": "Tùy chọn tải xuống:",
+    "delay_options": "Tùy chọn cho tiến trình tải:",
+    "album_id": "ID Album:",
+    "delay_time": "Thời gian delay:"
+  },
+  "form_placeholders": {
+    "enter_username": "Vui lòng nhập tên người dùng!",
+    "enter_url": "Vui lòng nhập đường dẫn!",
+    "select_download_type": "Vui lòng chọn loại tải!",
+    "select_target": "Vui lòng chọn đối tượng!"
+  },
+  "download_targets": {
+    "profile": "Người dùng",
+    "group": "Nhóm"
+  },
+  "download_options": {
+    "separate_folders": "Tạo riêng thư mục cho từng bài viết",
+    "merge_into_one": "Gộp tất cả media vào một thư mục",
+    "wait_until_completed": "Chờ đợi cho đến khi lượt tải xuống trước đó hoàn thành",
+    "set_delay": "Thiết lập thời gian delay giữa các lần tải"
+  },
+  "actions": {
+    "download": "Tải",
+    "cancel": "Hủy",
+    "update": "Cập nhật",
+    "authenticate": "Xác thực ngay",
+    "authenticate_again": "Xác thực lại"
+  },
+  "status": {
+    "running": "Đang tải",
+    "completed": "Hoàn thành",
+    "failed": "Thất bại",
+    "authenticated": "Đã xác thực",
+    "not_authenticated": "Chưa xác thực"
+  },
+  "table_headers": {
+    "no": "STT",
+    "download_type": "Loại tải",
+    "username": "Username",
+    "id": "ID",
+    "downloaded_count": "Số lượng đã tải",
+    "status": "Trạng thái",
+    "actions": "Hành động"
+  },
+  "alerts": {
+    "authenticate_facebook": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook trước khi sử dụng các tính năng dưới đây!",
+    "authenticate_instagram": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Instagram trước khi sử dụng các tính năng dưới đây!",
+    "authenticate_threads": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Threads trước khi sử dụng các tính năng dưới đây!",
+    "authenticate_x": "Hãy đảm bảo rằng bạn đã xác thực tài khoản X trước khi sử dụng các tính năng dưới đây!",
+    "authenticate_all": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook/Instagram/Threads/X trước khi sử dụng các tính năng tương ứng dưới đây!",
+    "new_version": "🚀 Đã có phiên bản mới của Social Downloader!",
+    "update_experience": "Bạn hãy vui lòng tải phiên bản mới nhất về để có những trải nghiệm tốt nhất.",
+    "reaction_success": "Thả cảm xúc story thành công",
+    "reaction_failed": "Thả cảm xúc story thất bại",
+    "story_id_not_found": "Không tìm thấy story ID",
+    "here": "Tại đây",
+    "download_success": "Tải xuống thành công!"
+  },
+  "account_info": {
+    "id": "ID",
+    "name": "Name",
+    "dark_mode": "Dark mode"
+  },
+  "footer": {
+    "made_by": "Made by"
+  },
+  "download_types": {
+    "x": {
+      "media": "Ảnh/video trên trang cá nhân",
+      "post": "Ảnh/video trên bài viết"
+    },
+    "facebook": {
+      "photo": "Ảnh",
+      "video": "Video",
+      "reel": "Reels",
+      "highlight": "Story nổi bật",
+      "album_by_id": "Album ảnh (theo ID)",
+      "post": "Ảnh/video trên bài viết",
+      "story": "Story/Highlight",
+      "comment_video": "Video ở bình luận"
+    },
+    "instagram": {
+      "post": "Ảnh/video trên bài viết",
+      "reel": "Reels",
+      "highlight": "Story nổi bật",
+      "story": "Story",
+      "post_type": "Bài viết",
+      "highlight_type": "Highlight"
+    },
+    "threads": {
+      "post": "Ảnh/video trên bài viết)"
+    }
+  },
+  "time_units": {
+    "second": "giây",
+    "seconds": "giây"
+  },
+  "error_messages": {
+    "authenticate_x_first": "Vui lòng xác thực tài khoản X trước khi tải xuống!"
+  },
+  "language": {
+    "title": "Ngôn ngữ",
+    "english": "Tiếng Anh",
+    "vietnamese": "Tiếng Việt"
+  }
+}
