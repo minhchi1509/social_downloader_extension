@@ -47,7 +47,7 @@ export const getRootContainer = () =>
   new Promise((resolve) => {
     const checkAndResolve = () => {
       const targetElement = document.querySelector(
-        "div.x11lhmoz.x78zum5.x1q0g3np.xsdox4t.x10l6tqk.xtzzx4i.xwa60dl.xl56j7k.xtuxyv6 div.x78zum5.xl56j7k"
+        "div.x11lhmoz.x78zum5.x1q0g3np.xsdox4t.xbudbmw.x10l6tqk.xwa60dl.xl56j7k.xtuxyv6"
       )
       const existingContainer = document.getElementById(CONTAINER_ID)
 
@@ -55,7 +55,7 @@ export const getRootContainer = () =>
         createStyle()
         const container = document.createElement("div")
         container.id = CONTAINER_ID
-        targetElement.insertAdjacentElement("afterend", container)
+        targetElement.appendChild(container)
         renderComponent(container)
         resolve(container)
       }
