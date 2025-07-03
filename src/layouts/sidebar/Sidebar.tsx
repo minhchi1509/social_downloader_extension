@@ -6,6 +6,7 @@ import { Link, useLocation } from "react-router-dom"
 import "./Sidebar.scss"
 
 import {
+  Download2Icon,
   DownloadIcon,
   FacebookIcon,
   InstagramIcon,
@@ -71,7 +72,7 @@ const Sidebar = () => {
     },
     {
       key: APP_ROUTES.DOWNLOAD_SEPERATE,
-      icon: <DownloadIcon className="size-4" />,
+      icon: <Download2Icon className="size-4" />,
       label: (
         <Link to={APP_ROUTES.DOWNLOAD_SEPERATE}>
           {t("sidebar.download_separate")}

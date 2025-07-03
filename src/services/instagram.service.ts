@@ -1,5 +1,6 @@
 import axios from "axios"
 import dayjs from "dayjs"
+import i18next from "i18next"
 
 import { igAxiosInstance } from "src/configs/axios.config"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
@@ -45,9 +46,7 @@ const getInstagramAccountData = async () => {
     }
     return instagramProfile
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu tài khoản Instagram. Đảm bảo rằng bạn đã đăng nhập vào Instagram trên trình duyệt"
-    )
+    throw new Error(i18next.t("error_messages.instagram_account_error"))
   }
 }
 
@@ -61,7 +60,9 @@ const getInstagramIdAndAvatarByUsername = async (username: string) => {
   )
 
   if (!user) {
-    throw new Error(`Tên người dùng ${username} không tồn tại`)
+    throw new Error(
+      i18next.t("error_messages.instagram_username_not_exist", { username })
+    )
   }
   return {
     id: user.user.pk as string,
@@ -124,7 +125,9 @@ const getAllStoriesByHighlightId = async (highlightId: string) => {
     }
   } catch (error) {
     throw new Error(
-      `Đã xảy ra lỗi khi lấy dữ liệu story từ highlight ${highlightId}`
+      i18next.t("error_messages.instagram_highlight_story_error", {
+        highlightId
+      })
     )
   }
 }
@@ -177,7 +180,9 @@ const getActiveStoriesByUsername = async (
     }))
     return result
   } catch (error) {
-    throw new Error(`Đã xảy ra lỗi khi lấy dữ liệu story của ${username}`)
+    throw new Error(
+      i18next.t("error_messages.instagram_story_error", { username })
+    )
   }
 }
 
@@ -229,7 +234,7 @@ const getIgPostDataByUrl = async (postUrl: string): Promise<IIGPost> => {
       images
     }
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bài viết")
+    throw new Error(i18next.t("error_messages.instagram_post_data_error"))
   }
 }
 
@@ -260,7 +265,7 @@ const getIgReelDataByUrl = async (reelUrl: string): Promise<IIGReel> => {
       downloadUrl: originalReelData.video_versions[0].url
     }
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu reel")
+    throw new Error(i18next.t("error_messages.instagram_reel_data_error"))
   }
 }
 

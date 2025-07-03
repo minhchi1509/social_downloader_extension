@@ -137,7 +137,7 @@ const WeiboDownloadAllForm = () => {
             initialValue="MEDIA"
             style={{ flex: 1 }}>
             <Select>
-              {getWeiboDownloadAllTypeOptions(t).map((v) => (
+              {getWeiboDownloadAllTypeOptions().map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>

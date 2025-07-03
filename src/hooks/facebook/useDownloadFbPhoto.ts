@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IDownloadAllOptions, IMedia } from "src/interfaces/common.interface"
@@ -13,6 +15,7 @@ import { showErrorToast } from "src/utils/toast.util"
 
 const useDownloadFbPhoto = () => {
   const { updateProcess } = useDownloadProcesses()
+  const { t } = useTranslation()
 
   const startDownloadAllPhotos = async (
     target: "PROFILE" | "GROUP",
@@ -36,7 +39,7 @@ const useDownloadFbPhoto = () => {
         const responseData = await downloadFunc(targetId, currentCursor)
         if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
-            throw new Error("Đã xảy ra lỗi khi lấy dữ liệu ảnh từ Facebook")
+            throw new Error(t("error_messages.facebook_photo_fetch_error"))
           }
           retryCount += 1
           continue

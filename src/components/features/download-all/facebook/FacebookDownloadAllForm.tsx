@@ -233,7 +233,7 @@ const FacebookDownloadAllForm = () => {
             ]}
             style={{ flex: 1 }}>
             <Select>
-              {getFbDownloadAllTypeOptions(t)[target]?.map((v) => (
+              {getFbDownloadAllTypeOptions()[target]?.map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>

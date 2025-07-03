@@ -189,7 +189,7 @@ const IgDownloadAllForm = () => {
             ]}
             style={{ flex: 4 }}>
             <Select>
-              {getIgDownloadAllTypeOptions(t).map((v) => (
+              {getIgDownloadAllTypeOptions().map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>

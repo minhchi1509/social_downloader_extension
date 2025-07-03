@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IDownloadAllOptions } from "src/interfaces/common.interface"
@@ -15,6 +17,7 @@ import { showErrorToast } from "src/utils/toast.util"
 
 const useDownloadIgReel = () => {
   const { updateProcess } = useDownloadProcess()
+  const { t } = useTranslation()
 
   const downloadCsvFile = async (reels: IIGReel[], username: string) => {
     const csvReelsData = reels.map((reel, index) => ({
@@ -51,7 +54,7 @@ const useDownloadIgReel = () => {
         )
         if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
-            throw new Error("Đã xảy ra lỗi khi lấy dữ liệu reel từ Instagram")
+            throw new Error(t("error_messages.instagram_reel_fetch_error"))
           }
           retryCount += 1
           continue

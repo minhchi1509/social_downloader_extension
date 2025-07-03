@@ -1,23 +1,21 @@
-# Extension tải xuống hàng loạt cho các mạng xã hội
+# Bulk download extension for social networksGiới thiệu
 
-## Giới thiệu
+- This is an extension that allows users to download photos and videos in bulk on social networking platforms: **Facebook**, **Instagram**, **Threads**, **Weibo**, **X**
 
-- Đây là một extension cho phép người dùng tải xuống hàng loạt ảnh, video trên các nền tảng mạng xã hội: **Facebook**, **Instagram**, **Threads** và **X**
+## Features
 
-## Tính năng
+- For **Facebook**: Download all photos, videos, reels, highlights, stories of an user profile, fanpage, group, drop custom reaction on facebook story.
+- For **Instagram**: Download photos, videos from all posts, reels, highlights, stories of a public or private profile (if you have followed them).
+- For **Threads**: Download photos, videos, audio from all posts of a public or private profile (if you have followed them).
+- For **X**: Download all photos, videos on an user profile.
+- For **Weibo**: Download all photos, videos on an user profile.
+- You can also download individual photos, videos, by URL.
+- You can cancel the download process if needed.
+- Support light/dark mode, multilingual.
 
-- Đối với **Facebook**: Tải xuống tất cả ảnh, video, reel, highlight, story của một trang cá nhân, hoặc Fanpage
-- Đối với **Instagram**: Tải xuống ảnh, video từ tất cả các bài viết, reel, highlight, story của profile công khai hoặc riêng tư (nếu bạn đã theo dõi họ)
-- Đối với **Threads**: Tải xuống ảnh, video, audio từ tất cả các bài viết của profile công khai, riêng tư (nếu bạn đã theo dõi họ)
-- Đối với **X**: Tải xuống tất cả ảnh, video trên trang cá nhân
-- Ngoài ra bạn có thể tải riêng lẻ ảnh, video, theo URL.
-- Có thể hủy bỏ tiến trình tải nếu cần
+## Installation
 
-## Cài đặt
-
-- Click vào đây để tải xuống extension: [Social Downloader Extension](https://github.com/minhchi1509/social_downloader_extension/raw/main/social_downloader_extension.zip)
-- Giải nén, vào **Chrome Extension**, chọn **Load unpacked** ➡️ Upload folder vừa giải nén lên, sau đó click vào icon của extension.
-- Ở phía Sidebar bên trái, chọn **Tài khoản**, sau đó thực hiện xác thực các tài khoản để sử dụng các tính năng tải.
+- [Click here to install extension](https://chromewebstore.google.com/detail/social-downloader/cnejldbhpclimaappoekdhmeieehfdpb)
 
 > [!TIP]
 > Nếu mọi người thấy extension hữu ích, hãy ủng hộ em/mình bằng 1 sao trên repo này hoặc nếu mọi người có nhu cầu donate thì thông qua STK: 908815092002 (Techcombank) - NGUYEN MINH CHI. Em xin cảm ơn

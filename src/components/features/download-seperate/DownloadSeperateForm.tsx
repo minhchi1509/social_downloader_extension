@@ -97,7 +97,7 @@ const DownloadSeperateForm = () => {
               }
             ]}>
             <Select>
-              {getDownloadSeperateTypeOptions(t).map((group) => (
+              {getDownloadSeperateTypeOptions().map((group) => (
                 <OptGroup key={group.group} label={group.group}>
                   {group.options.map((option) => (
                     <Option key={option.value} value={option.value}>

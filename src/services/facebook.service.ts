@@ -1,4 +1,5 @@
 import axios from "axios"
+import i18next from "i18next"
 
 import { fbAxiosInstance } from "src/configs/axios.config"
 import { ESocialProvider } from "src/constants/enum"
@@ -16,7 +17,7 @@ const makeRequestToFb = async (docID: string, query: any) => {
   try {
     const fbAccountData = useAuth.getState().accounts[ESocialProvider.FACEBOOK]
     if (!fbAccountData) {
-      throw new Error("Vui lòng xác thực tài khoản Facebook trước")
+      throw new Error(i18next.t("error_messages.facebook_authenticate_first"))
     }
     const formData = new FormData()
     formData.set("__a", "1")
@@ -28,7 +29,7 @@ const makeRequestToFb = async (docID: string, query: any) => {
     const { data } = await fbAxiosInstance.post("/", formData)
     return data
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến Facebook")
+    throw new Error(i18next.t("error_messages.facebook_request_error"))
   }
 }
 
@@ -66,9 +67,7 @@ const getFacebookAccountData = async () => {
     }
     return fbAccountData
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu tài khoản Facebook. Đảm bảo rằng bạn đã đăng nhập vào Facebook trên trình duyệt"
-    )
+    throw new Error(i18next.t("error_messages.facebook_account_error"))
   }
 }
 
@@ -80,7 +79,9 @@ const getFbIdFromUsername = async (username: string) => {
     const userId = data.match(/"userID":"(\d+)"/)[1]
     return userId as string
   } catch (error) {
-    throw new Error(`Không thể lấy Facebook ID của người dùng ${username}`)
+    throw new Error(
+      i18next.t("error_messages.facebook_user_id_error", { username })
+    )
   }
 }
 
@@ -95,18 +96,22 @@ const getGroupIdFromName = async (groupName: string) => {
     }
     return groupId as string
   } catch (error) {
-    throw new Error(`Không thể lấy Facebook ID của nhóm ${groupName}`)
+    throw new Error(
+      i18next.t("error_messages.facebook_group_id_error", { groupName })
+    )
   }
 }
 
 const getFbIdFromUrl = async (url: string) => {
   if (!URL.canParse(url)) {
-    throw new Error("URL không hợp lệ")
+    throw new Error(i18next.t("error_messages.invalid_url"))
   }
   const { data } = await fbAxiosInstance.get(url)
   const userId = data?.match(/"userID":"(\d+)"/)?.[1]
   if (!userId) {
-    throw new Error("Không thể lấy Facebook ID của người dùng từ URL")
+    throw new Error(
+      i18next.t("error_messages.facebook_user_id_error", { username: "URL" })
+    )
   }
   return userId as string
 }

@@ -165,7 +165,7 @@ const ThreadsDownloadAllForm = () => {
             initialValue="POST"
             style={{ flex: 1 }}>
             <Select>
-              {getThreadsDownloadAllTypeOptions(t).map((v) => (
+              {getThreadsDownloadAllTypeOptions().map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>

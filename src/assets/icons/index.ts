@@ -1,4 +1,5 @@
 import CheckCircleIcon from "react:./check-circle.svg"
+import Download2Icon from "react:./download-2.svg"
 import DownloadIcon from "react:./download.svg"
 import EnglandFlagIcon from "react:./england-flag.svg"
 import ErrorIcon from "react:./error.svg"
@@ -35,5 +36,6 @@ export {
   GlobalIcon,
   VietnamFlagIcon,
   EnglandFlagIcon,
-  WeiboIcon
+  WeiboIcon,
+  Download2Icon
 }

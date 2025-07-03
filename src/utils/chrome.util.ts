@@ -7,7 +7,7 @@ const getChromeCookies = async (domain: string): Promise<string> => {
           .join(";")
         resolve(cookieList)
       } else {
-        reject("Không tìm thấy cookie")
+        reject("Cookie not found for domain: " + domain)
       }
     })
   })
@@ -56,16 +56,16 @@ const downloadFile = async (
         return reject(chrome.runtime.lastError)
       }
       if (!waitUntilCompleted) {
-        return resolve("Tải xuống bắt đầu")
+        return resolve("Start downloading")
       } else {
         chrome.downloads.onChanged.addListener(
           function onDownloadChanged(downloadDelta) {
             if (downloadDelta.id === downloadId && downloadDelta.state) {
               if (downloadDelta.state.current === "complete") {
-                resolve("Tải xuống hoàn tất")
+                resolve("Download completed")
                 chrome.downloads.onChanged.removeListener(onDownloadChanged)
               } else if (downloadDelta.state.current === "interrupted") {
-                reject("Tải xuống bị gián đoạn")
+                reject("Download interrupted")
                 chrome.downloads.onChanged.removeListener(onDownloadChanged)
               }
             }

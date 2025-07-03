@@ -1,5 +1,6 @@
 import axios from "axios"
 import dayjs from "dayjs"
+import i18next from "i18next"
 
 import { threadsAxiosInstance } from "src/configs/axios.config"
 import { IThreadsAccount } from "src/interfaces/account.interface"
@@ -36,9 +37,7 @@ const getThreadsAccountData = async () => {
     }
     return threadsProfile
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu tài khoản Threads. Đảm bảo rằng bạn đã đăng nhập vào Threads trên trình duyệt"
-    )
+    throw new Error(i18next.t("error_messages.threads_account_error"))
   }
 }
 
@@ -48,7 +47,7 @@ const getUserIdByUsername = async (username: string) => {
   )
   const userId = data.match(/"user_id":"(\d+)"/)?.[1]
   if (!userId) {
-    throw new Error("Không thể lấy thông tin người dùng")
+    throw new Error(i18next.t("error_messages.threads_user_info_error"))
   }
   return userId as string
 }
@@ -133,7 +132,7 @@ const geThreadstPostDataByUrl = async (
       audios
     }
   } catch (error) {
-    throw new Error(`Đã xảy ra lỗi khi lấy dữ liệu bài viết`)
+    throw new Error(i18next.t("error_messages.threads_post_error"))
   }
 }
 

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IDownloadAllOptions } from "src/interfaces/common.interface"
@@ -15,6 +17,7 @@ import { showErrorToast } from "src/utils/toast.util"
 
 const useDownloadThreadsPost = () => {
   const { updateProcess } = useDownloadProcesses()
+  const { t } = useTranslation()
 
   const downloadCsvFile = async (posts: IThreadsPost[], username: string) => {
     const csvPostsData = posts.map((post, index) => ({
@@ -58,7 +61,7 @@ const useDownloadThreadsPost = () => {
         )
         if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
-            throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bài viết từ Threads")
+            throw new Error(t("error_messages.threads_post_fetch_error"))
           }
           retryCount += 1
           continue

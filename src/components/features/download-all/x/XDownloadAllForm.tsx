@@ -163,7 +163,7 @@ const XDownloadAllForm = () => {
             initialValue="MEDIA"
             style={{ flex: 4 }}>
             <Select>
-              {getXDownloadAllTypeOptions(t).map((v) => (
+              {getXDownloadAllTypeOptions().map((v) => (
                 <Select.Option key={v.value} value={v.value}>
                   {v.label}
                 </Select.Option>

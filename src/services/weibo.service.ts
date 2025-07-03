@@ -1,4 +1,5 @@
 import axios from "axios"
+import i18next from "i18next"
 
 import { weiboAxiosInstance } from "src/configs/axios.config"
 import { IWeiboAccount } from "src/interfaces/account.interface"
@@ -38,9 +39,7 @@ const getWeiboAccountData = async (): Promise<IWeiboAccount> => {
       cookies
     }
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu tài khoản Weibo. Đảm bảo rằng bạn đã đăng nhập vào Weibo trên trình duyệt"
-    )
+    throw new Error(i18next.t("error_messages.weibo_account_error"))
   }
 }
 
@@ -82,9 +81,7 @@ const getWeiboPostDataById = async (postId: string): Promise<IWeiboPost> => {
     })
     return formatWeiboPostData(postData)
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu bài viết Weibo. Vui lòng kiểm tra lại ID bài viết"
-    )
+    throw new Error(i18next.t("error_messages.weibo_post_error"))
   }
 }
 

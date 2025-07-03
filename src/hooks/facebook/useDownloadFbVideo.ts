@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next"
+
 import { ESocialProvider } from "src/constants/enum"
 import { MAX_RETRY_REQUEST } from "src/constants/variables"
 import { IDownloadAllOptions, IMedia } from "src/interfaces/common.interface"
@@ -13,6 +15,7 @@ import { showErrorToast } from "src/utils/toast.util"
 
 const useDownloadFbVideo = () => {
   const { updateProcess } = useDownloadProcesses()
+  const { t } = useTranslation()
 
   const startDownloadAllVideos = async (
     target: "PROFILE" | "GROUP",
@@ -37,7 +40,7 @@ const useDownloadFbVideo = () => {
         const responseData = await downloadFunc(targetId, currentCursor)
         if (!responseData) {
           if (retryCount >= MAX_RETRY_REQUEST) {
-            throw new Error("Đã xảy ra lỗi khi lấy dữ liệu video từ Facebook")
+            throw new Error(t("error_messages.facebook_video_fetch_error"))
           }
           retryCount += 1
           continue
