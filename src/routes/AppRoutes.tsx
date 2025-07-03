@@ -10,6 +10,7 @@ import WeiboDownloadAllPage from "src/pages/download-all/WeiboDownloadAllPage"
 import XDownloadAllPage from "src/pages/download-all/XDownloadAllPage"
 import DownloadSeperatePage from "src/pages/download-seperate/DownloadSeperatePage"
 import SettingPage from "src/pages/setting/SettingPage"
+import SupportMePage from "src/pages/support-me/SupportMePage"
 
 const AppRoutes = () => {
   return (
@@ -45,6 +46,7 @@ const AppRoutes = () => {
           element={<DownloadSeperatePage />}
         />
         <Route path={APP_ROUTES.SETTINGS} element={<SettingPage />} />
+        <Route path={APP_ROUTES.SUPPORT_ME} element={<SupportMePage />} />
       </Route>
     </Routes>
   )

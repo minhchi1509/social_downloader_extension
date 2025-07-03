@@ -1,3 +1,5 @@
+import i18next from "i18next"
+
 import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
 import threadsService from "src/services/threads.service"
@@ -6,7 +8,7 @@ import { extractIdFromUrl, isVerifyAccount } from "src/utils/common.util"
 
 export const downloadThreadsPostMedia = async (postUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.THREADS)) {
-    throw new Error("Vui lòng xác thực tài khoản Threads trước khi tải xuống!")
+    throw new Error(i18next.t("error_messages.authenticate_threads_first"))
   }
   const postId = extractIdFromUrl(
     postUrl,

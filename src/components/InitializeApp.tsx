@@ -47,7 +47,7 @@ const InitializeApp: FC<PropsWithChildren> = ({ children }) => {
         document.documentElement.setAttribute("class", theme || "light")
       }
     } catch (error) {
-      console.log("Đã có lỗi xảy ra khi khởi tạo extension", error)
+      console.log("Error initializing extension:", error)
     } finally {
       setIsInitialized(false)
     }

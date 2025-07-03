@@ -16,7 +16,8 @@
     "weibo_download_all": "Tải xuống hàng loạt Weibo",
     "download_separate": "Tải xuống riêng lẻ",
     "accounts": "Quản lý tài khoản",
-    "settings": "Cài đặt"
+    "settings": "Cài đặt",
+    "support_me": "Ủng hộ tôi"
   },
   "form_labels": {
     "download_type": "Loại tải:",
@@ -90,7 +91,9 @@
     "dark_mode": "Dark mode"
   },
   "footer": {
-    "made_by": "Made by"
+    "made_by": "Made by",
+    "useful_extension": "Nếu bạn thấy extension này hữu ích, bạn có thể ủng hộ tôi",
+    "here": "Tại đây"
   },
   "download_types": {
     "x": {
@@ -129,6 +132,10 @@
   },
   "error_messages": {
     "authenticate_x_first": "Vui lòng xác thực tài khoản X trước khi tải xuống!",
+    "authenticate_weibo_first": "Vui lòng xác thực tài khoản Weibo trước khi tải xuống!",
+    "authenticate_threads_first": "Vui lòng xác thực tài khoản Threads trước khi tải xuống!",
+    "authenticate_instagram_first": "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!",
+    "authenticate_facebook_first": "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!",
     "weibo_fetch_error": "Đã xảy ra lỗi khi lấy dữ liệu từ Weibo",
     "threads_post_fetch_error": "Đã xảy ra lỗi khi lấy dữ liệu bài viết từ Threads",
     "instagram_reel_fetch_error": "Đã xảy ra lỗi khi lấy dữ liệu reel từ Instagram",
@@ -154,7 +161,19 @@
     "facebook_account_error": "Không thể lấy dữ liệu tài khoản Facebook. Đảm bảo rằng bạn đã đăng nhập vào Facebook trên trình duyệt",
     "facebook_user_id_error": "Không thể lấy Facebook ID của người dùng {username}",
     "facebook_group_id_error": "Không thể lấy Facebook ID của nhóm {groupName}",
-    "invalid_url": "URL không hợp lệ"
+    "invalid_url": "URL không hợp lệ",
+    "facebook_photo_download_link_error": "Không thể lấy đường dẫn tải xuống ảnh",
+    "facebook_story_data_error": "Đã xảy ra lỗi khi lấy dữ liệu story",
+    "facebook_video_download_link_error": "Đã xảy ra lỗi khi lấy đường dẫn tải xuống video",
+    "facebook_post_media_error": "Không thể lấy dữ liệu media từ bài viết",
+    "facebook_post_data_error": "Đã xảy ra lỗi khi lấy dữ liệu bài viết",
+    "facebook_reel_download_link_error": "Đã xảy ra lỗi khi lấy đường dẫn tải xuống reel",
+    "facebook_comment_data_error": "Đã xảy ra lỗi khi lấy dữ liệu bình luận",
+    "facebook_reply_comment_data_error": "Đã xảy ra lỗi khi lấy dữ liệu phản hồi bình luận",
+    "facebook_comment_video_error": "Đã xảy ra lỗi khi lấy dữ liệu của video trong bình luận",
+    "x_account_error": "Không thể lấy dữ liệu tài khoản X. Đảm bảo rằng bạn đã đăng nhập vào X trên trình duyệt",
+    "x_user_id_error": "Không thể lấy ID từ người dùng {username}",
+    "x_post_data_error": "Không thể lấy dữ liệu bài viết với ID {postId}"
   },
   "language": {
     "title": "Ngôn ngữ",
@@ -164,5 +183,11 @@
   "tags": {
     "experimental": "Thử nghiệm",
     "coming_soon": "Sắp ra mắt"
+  },
+  "support_me_page": {
+    "title": "Ủng hộ tôi",
+    "description": "Nếu bạn thấy sản phẩm của tôi hữu ích và muốn ủng hộ, bạn có thể đóng góp qua các phương thức sau. Mỗi đóng góp đều được trân trọng! 🙏",
+    "thank_you_title": "Cảm ơn sự ủng hộ của bạn! 💝",
+    "thank_you_message": "Sự ủng hộ của bạn có ý nghĩa rất lớn và giúp tôi tiếp tục tạo ra những nội dung có giá trị. Dù là một ly cà phê nhỏ hay một khoản đóng góp hào phóng, mỗi sự đóng góp đều tạo nên sự khác biệt!"
   }
 }

@@ -1,3 +1,5 @@
+import i18next from "i18next"
+
 import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
 import { DOWNLOAD_STORIES_IN_HIGHLIGHT_BATCH_SIZE } from "src/constants/variables"
@@ -12,9 +14,7 @@ import {
 
 export const downloadIgPostMedia = async (postUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
-    throw new Error(
-      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
-    )
+    throw new Error(i18next.t("error_messages.authenticate_instagram_first"))
   }
   const postData = await instagramService.getIgPostDataByUrl(postUrl)
   const mediaList = [...postData.videos, ...postData.images]
@@ -35,9 +35,7 @@ export const downloadIgPostMedia = async (postUrl: string) => {
 
 export const downloadIgReelMedia = async (reelUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
-    throw new Error(
-      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
-    )
+    throw new Error(i18next.t("error_messages.authenticate_instagram_first"))
   }
   const reelData = await instagramService.getIgReelDataByUrl(reelUrl)
   await chromeUtils.downloadFile({
@@ -48,9 +46,7 @@ export const downloadIgReelMedia = async (reelUrl: string) => {
 
 export const downloadIgHighlightStories = async (highlightUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.INSTAGRAM)) {
-    throw new Error(
-      "Vui lòng xác thực tài khoản Instagram trước khi tải xuống!"
-    )
+    throw new Error(i18next.t("error_messages.authenticate_instagram_first"))
   }
   const highlightId = extractIdFromUrl(
     highlightUrl,

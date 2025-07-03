@@ -1,9 +1,10 @@
 import { format } from "@fast-csv/format"
 import axios from "axios"
 import clsx, { ClassValue } from "clsx"
+import i18next from "i18next"
 import { twMerge } from "tailwind-merge"
 
-import { ESocialProvider, EStorageKey } from "src/constants/enum"
+import { ESocialProvider } from "src/constants/enum"
 import useAuth from "src/store/auth"
 import useDownloadProcesses from "src/store/download-process"
 import { chromeUtils } from "src/utils/chrome.util"
@@ -70,7 +71,7 @@ export const downloadStatisticCsvFile = async <T extends object>(
 export const extractIdFromUrl = (url: string, regexPattern: RegExp) => {
   const match = url.match(regexPattern)
   if (!match) {
-    throw new Error("URL không hợp lệ")
+    throw new Error(i18next.t("error_messages.invalid_url"))
   }
   return match[1]
 }
@@ -110,7 +111,7 @@ export const makeRequestToFacebookFromContent = async (
   const originalProfileInfor = rawData.match(profileRegex)
   const fbDtsg = rawData.match(fbDtsgRegex)?.[1]
   if (!originalProfileInfor || !fbDtsg) {
-    throw new Error("Không thể lấy thông tin người dùng")
+    throw new Error(i18next.t("error_messages.threads_user_info_error"))
   }
   const profileInfor = JSON.parse(originalProfileInfor[1])
   const profileId = profileInfor.id

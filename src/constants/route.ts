@@ -8,5 +8,6 @@ export const APP_ROUTES = {
     WEIBO: "/download-all/weibo"
   },
   DOWNLOAD_SEPERATE: "/download-seperate",
-  SETTINGS: "/settings"
+  SETTINGS: "/settings",
+  SUPPORT_ME: "/support-me"
 }

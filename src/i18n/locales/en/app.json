@@ -16,7 +16,8 @@
     "weibo_download_all": "Download All Weibo",
     "download_separate": "Download Separate",
     "accounts": "Manage Accounts",
-    "settings": "Settings"
+    "settings": "Settings",
+    "support_me": "Support My Work"
   },
   "form_labels": {
     "download_type": "Download Type:",
@@ -90,7 +91,9 @@
     "dark_mode": "Dark mode"
   },
   "footer": {
-    "made_by": "Made by"
+    "made_by": "Made by",
+    "useful_extension": "If you find this extension useful, you can support me",
+    "here": "Here"
   },
   "download_types": {
     "x": {
@@ -129,6 +132,10 @@
   },
   "error_messages": {
     "authenticate_x_first": "Please authenticate your X account before downloading!",
+    "authenticate_weibo_first": "Please authenticate your Weibo account before downloading!",
+    "authenticate_threads_first": "Please authenticate your Threads account before downloading!",
+    "authenticate_instagram_first": "Please authenticate your Instagram account before downloading!",
+    "authenticate_facebook_first": "Please authenticate your Facebook account before downloading!",
     "weibo_fetch_error": "An error occurred while fetching data from Weibo",
     "threads_post_fetch_error": "An error occurred while fetching post data from Threads",
     "instagram_reel_fetch_error": "An error occurred while fetching reel data from Instagram",
@@ -163,6 +170,7 @@
     "facebook_reel_download_link_error": "An error occurred while fetching reel download link",
     "facebook_comment_data_error": "An error occurred while fetching comment data",
     "facebook_reply_comment_data_error": "An error occurred while fetching reply comment data",
+    "facebook_comment_video_error": "An error occurred while fetching video data in comments",
     "x_account_error": "Unable to retrieve X account data. Make sure you are logged into X in the browser",
     "x_user_id_error": "Unable to get ID from user {username}",
     "x_post_data_error": "Unable to get post data with ID {postId}"
@@ -175,5 +183,11 @@
   "tags": {
     "experimental": "Experimental",
     "coming_soon": "Coming Soon"
+  },
+  "support_me_page": {
+    "title": "Support My Work",
+    "description": "If you find my work helpful and would like to support me, you can donate through the following methods. Every contribution is greatly appreciated! 🙏",
+    "thank_you_title": "Thank You for Your Support! 💝",
+    "thank_you_message": "Your support means the world to me and helps me continue creating valuable content. Whether it's a small coffee or a generous donation, every contribution makes a difference!"
   }
 }

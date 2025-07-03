@@ -1,3 +1,5 @@
+import i18next from "i18next"
+
 import { fbAxiosInstance } from "src/configs/axios.config"
 import { EDownloadSeperateType, ESocialProvider } from "src/constants/enum"
 import { URL_PATTERN } from "src/constants/regex"
@@ -17,9 +19,7 @@ import {
 export const downloadFbPostMedia = async (postUrl: string) => {
   try {
     if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-      throw new Error(
-        "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
-      )
+      throw new Error(i18next.t("error_messages.authenticate_facebook_first"))
     }
     const { data: rawData } = await fbAxiosInstance.get(postUrl)
     const temp = JSON.parse(
@@ -99,14 +99,15 @@ export const downloadFbPostMedia = async (postUrl: string) => {
     }
   } catch (error) {
     throw new Error(
-      (error as Error).message || "Đã xảy ra lỗi khi lấy dữ liệu của bài viết!"
+      (error as Error).message ||
+        i18next.t("error_messages.facebook_post_data_error")
     )
   }
 }
 
 export const downloadFbStoryMedia = async (storyUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+    throw new Error(i18next.t("error_messages.authenticate_facebook_first"))
   }
   const storyId = extractIdFromUrl(
     storyUrl,
@@ -128,7 +129,7 @@ export const downloadFbStoryMedia = async (storyUrl: string) => {
 
 export const downloadFbVideo = async (videoUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+    throw new Error(i18next.t("error_messages.authenticate_facebook_first"))
   }
   const videoId = extractIdFromUrl(
     videoUrl,
@@ -143,7 +144,7 @@ export const downloadFbVideo = async (videoUrl: string) => {
 
 export const downloadFbReel = async (reelUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-    throw new Error("Vui lòng xác thực tài khoản Facebook trước khi tải xuống!")
+    throw new Error(i18next.t("error_messages.authenticate_facebook_first"))
   }
   const reelId = extractIdFromUrl(
     reelUrl,
@@ -159,9 +160,7 @@ export const downloadFbReel = async (reelUrl: string) => {
 export const downloadFbCommentVideo = async (commentUrl: string) => {
   try {
     if (!isVerifyAccount(ESocialProvider.FACEBOOK)) {
-      throw new Error(
-        "Vui lòng xác thực tài khoản Facebook trước khi tải xuống!"
-      )
+      throw new Error(i18next.t("error_messages.authenticate_facebook_first"))
     }
     const parentCommentId = new URL(commentUrl).searchParams.get("comment_id")
     const replyCommentId = new URL(commentUrl).searchParams.get(
@@ -237,7 +236,7 @@ export const downloadFbCommentVideo = async (commentUrl: string) => {
   } catch (error) {
     throw new Error(
       (error as Error).message ||
-        "Đã xảy ra lỗi khi lấy dữ liệu của video trong bình luận"
+        i18next.t("error_messages.facebook_comment_video_error")
     )
   }
 }

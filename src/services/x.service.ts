@@ -1,4 +1,5 @@
 import axios from "axios"
+import i18next from "i18next"
 
 import { xAxiosInstance } from "src/configs/axios.config"
 import { ERemoteMessageType } from "src/constants/enum"
@@ -26,12 +27,6 @@ const getXAccountData = async (): Promise<IXAccount> => {
       throw new Error()
     }
 
-    const xTab = await chromeUtils.openNewTab({ url: "https://x.com/home" })
-    await delay(1000)
-    if (xTab.id) {
-      await chromeUtils.closeTab(xTab.id)
-    }
-
     const xAccountData: IXAccount = {
       id,
       username,
@@ -41,25 +36,50 @@ const getXAccountData = async (): Promise<IXAccount> => {
       csrfToken: ""
     }
 
-    await new Promise((resolve, reject) => {
-      chrome.runtime.sendMessage(
-        { type: ERemoteMessageType.RETRIEVE_X_ACCOUNT_CREDENTIALS },
-        (response) => {
-          if (response) {
-            xAccountData.accessToken = response.authorization
-            xAccountData.csrfToken = response.xCsrfToken
-            resolve("")
-          }
-          reject("")
-        }
-      )
-    })
+    const xTab = await chromeUtils.openNewTab({ url: "https://x.com/home" })
+
+    const maxWaitTime = 120000
+    const startTime = Date.now()
+
+    let credentialsReceived = false
+
+    while (!credentialsReceived && Date.now() - startTime < maxWaitTime) {
+      try {
+        const credentials = await new Promise<{
+          authorization: string
+          xCsrfToken: string
+        }>((resolve, reject) => {
+          chrome.runtime.sendMessage(
+            { type: ERemoteMessageType.RETRIEVE_X_ACCOUNT_CREDENTIALS },
+            (response) => {
+              if (response && response.authorization && response.xCsrfToken) {
+                resolve(response)
+              } else {
+                reject("No credentials yet")
+              }
+            }
+          )
+        })
+
+        xAccountData.accessToken = credentials.authorization
+        xAccountData.csrfToken = credentials.xCsrfToken
+        credentialsReceived = true
+      } catch (e) {
+        await delay(500)
+      }
+    }
+
+    if (xTab.id) {
+      await chromeUtils.closeTab(xTab.id)
+    }
+
+    if (!credentialsReceived) {
+      throw new Error()
+    }
 
     return xAccountData
   } catch (error) {
-    throw new Error(
-      "Không thể lấy dữ liệu tài khoản X. Đảm bảo rằng bạn đã đăng nhập vào X trên trình duyệt"
-    )
+    throw new Error(i18next.t("error_messages.x_account_error"))
   }
 }
 
@@ -77,7 +97,7 @@ const getXUserIdFromUsername = async (username: string): Promise<string> => {
     const userId = atob(base64UserId).split(":")[1]
     return userId
   } catch (error) {
-    throw new Error(`Không thể lấy ID từ user ${username}`)
+    throw new Error(i18next.t("error_messages.x_user_id_error", { username }))
   }
 }
 
@@ -158,7 +178,7 @@ const getPostMediaById = async (postId: string): Promise<IXMedia[]> => {
     })
     return formattedMediaList
   } catch (error) {
-    throw new Error(`Không thể lấy dữ liệu bài viết với ID ${postId}`)
+    throw new Error(i18next.t("error_messages.x_post_data_error", { postId }))
   }
 }
 

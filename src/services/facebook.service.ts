@@ -257,7 +257,9 @@ const getPhotoDownloadUrl = async (photoId: string, userId: string) => {
     (item: any) => item.__typename === "PhotoDownloadMenuItem"
   )?.story?.attachments?.[0]?.media?.download_link
   if (!downloadMenuItem) {
-    throw new Error("Không thể lấy link tải ảnh")
+    throw new Error(
+      i18next.t("error_messages.facebook_photo_download_link_error")
+    )
   }
   return downloadMenuItem as string
 }
@@ -336,7 +338,7 @@ const getStoryMedia = async (storyId: string) => {
       }
     }
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu story")
+    throw new Error(i18next.t("error_messages.facebook_story_data_error"))
   }
 }
 
@@ -366,7 +368,9 @@ const getVideoDownloadUrl = async (videoIdOrUrl: string) => {
     )
     return (hdUri.progressive_url || sdUri.progressive_url) as string
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy link tải video")
+    throw new Error(
+      i18next.t("error_messages.facebook_video_download_link_error")
+    )
   }
 }
 
@@ -457,7 +461,7 @@ const getPostMedia = async (postUrl: string) => {
       /"all_subattachments":(.*?),"comet_product_tag_feed_overlay_renderer"/
     const postMediaMatch = rawData.match(postMediaRegex)
     if (!postMediaMatch) {
-      throw new Error("Không thể lấy dữ liệu media của bài viết")
+      throw new Error(i18next.t("error_messages.facebook_post_media_error"))
     }
     const postMediaData = JSON.parse(postMediaMatch[1])
     const postMedia: IFacebookPost[] = postMediaData.nodes.map(
@@ -486,7 +490,9 @@ const getPostMedia = async (postUrl: string) => {
     )
     return postMedia
   } catch (error) {
-    throw error || new Error("Đã xảy ra lỗi khi lấy dữ liệu của bài viết")
+    throw (
+      error || new Error(i18next.t("error_messages.facebook_post_data_error"))
+    )
   }
 }
 
@@ -503,7 +509,9 @@ const getFbDownloadReelUrl = async (reelUrl: string) => {
     const sdUri = reelData.find((v: any) => v.metadata.quality === "SD")
     return (hdUri.progressive_url || sdUri.progressive_url) as string
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy link tải reel")
+    throw new Error(
+      i18next.t("error_messages.facebook_reel_download_link_error")
+    )
   }
 }
 
@@ -680,7 +688,7 @@ const getCommentData = async (commentUrl: string) => {
     } while (hasNextPage)
     return null
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bình luận")
+    throw new Error(i18next.t("error_messages.facebook_comment_data_error"))
   }
 }
 
@@ -760,7 +768,9 @@ const getReplyCommentData = async (
     } while (hasNextPage)
     return null
   } catch (error) {
-    throw new Error("Đã xảy ra lỗi khi lấy dữ liệu bình luận trả lời")
+    throw new Error(
+      i18next.t("error_messages.facebook_reply_comment_data_error")
+    )
   }
 }
 

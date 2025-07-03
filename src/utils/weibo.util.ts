@@ -1,4 +1,5 @@
 import axios from "axios"
+import i18next from "i18next"
 
 import {
   EDownloadSeperateType,
@@ -127,7 +128,7 @@ export const formatWeiboPostData = (postData: any): IWeiboPost => {
 
 export const downloadWeiboPostMedia = async (postUrl: string) => {
   if (!isVerifyAccount(ESocialProvider.WEIBO)) {
-    throw new Error("Vui lòng xác thực tài khoản Weibo trước khi tải xuống!")
+    throw new Error(i18next.t("error_messages.authenticate_weibo_first"))
   }
   const postId = extractIdFromUrl(
     postUrl,
