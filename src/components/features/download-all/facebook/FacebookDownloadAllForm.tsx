@@ -252,7 +252,7 @@ const FacebookDownloadAllForm = () => {
             rules={[
               {
                 required: true,
-                message: `${downloadType === "ALBUM_BY_ID" ? t("form_placeholders.select_download_type") : target === "PROFILE" ? t("form_placeholders.enter_username") : t("form_placeholders.select_target")}!`
+                message: `${downloadType === "ALBUM_BY_ID" ? t("form_placeholders.enter_album_id") : target === "PROFILE" ? t("form_placeholders.enter_username") : t("form_placeholders.select_target")}!`
               }
             ]}
             style={{ flex: 1 }}>

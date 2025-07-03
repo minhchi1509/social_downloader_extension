@@ -33,7 +33,8 @@
     "enter_username": "Please enter username!",
     "enter_url": "Please enter URL!",
     "select_download_type": "Please select download type!",
-    "select_target": "Please select target!"
+    "select_target": "Please select target!",
+    "enter_album_id": "Please enter album ID!"
   },
   "download_targets": {
     "profile": "User",

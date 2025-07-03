@@ -216,9 +216,6 @@ const IgDownloadAllForm = () => {
               <Select>
                 <Select.Option value={false}>
                   {t("download_options.separate_folders")}{" "}
-                  {downloadType === "POST"
-                    ? t("download_types.instagram.post_type")
-                    : t("download_types.instagram.highlight_type")}
                 </Select.Option>
                 <Select.Option value={true}>
                   {t("download_options.merge_into_one")}

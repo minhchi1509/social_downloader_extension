@@ -33,7 +33,8 @@
     "enter_username": "Vui lòng nhập tên người dùng!",
     "enter_url": "Vui lòng nhập đường dẫn!",
     "select_download_type": "Vui lòng chọn loại tải!",
-    "select_target": "Vui lòng chọn đối tượng!"
+    "select_target": "Vui lòng chọn đối tượng!",
+    "enter_album_id": "Vui lòng nhập ID Album!"
   },
   "download_targets": {
     "profile": "Người dùng",
