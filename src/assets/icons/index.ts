@@ -14,6 +14,7 @@ import ThemeModeIcon from "react:./theme-mode.svg"
 import ThreadsIcon from "react:./threads.svg"
 import UserIcon from "react:./user.svg"
 import VietnamFlagIcon from "react:./vietnam-flag.svg"
+import WeiboIcon from "react:./weibo.svg"
 import XIcon from "react:./x.svg"
 
 export {
@@ -33,5 +34,6 @@ export {
   SettingIcon,
   GlobalIcon,
   VietnamFlagIcon,
-  EnglandFlagIcon
+  EnglandFlagIcon,
+  WeiboIcon
 }

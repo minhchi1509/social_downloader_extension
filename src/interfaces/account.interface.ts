@@ -23,9 +23,12 @@ export interface IXAccount extends IAccountData {
   accessToken: string
 }
 
+export interface IWeiboAccount extends IAccountData {}
+
 export interface IAccounts {
   [ESocialProvider.FACEBOOK]: IFacebookAccount | null
   [ESocialProvider.INSTAGRAM]: IInstagramAccount | null
   [ESocialProvider.THREADS]: IThreadsAccount | null
   [ESocialProvider.X]: IXAccount | null
+  [ESocialProvider.WEIBO]: IWeiboAccount | null
 }

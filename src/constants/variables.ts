@@ -17,6 +17,10 @@ export const getXDownloadAllTypeOptions = (t: TFunction) => [
   { label: t("download_types.x.media"), value: "MEDIA" }
 ]
 
+export const getWeiboDownloadAllTypeOptions = (t: TFunction) => [
+  { label: t("download_types.weibo.media"), value: "MEDIA" }
+]
+
 export const getFbDownloadAllTypeOptions = (t: TFunction) => ({
   PROFILE: [
     { label: t("download_types.facebook.photo"), value: "PHOTO" },
@@ -37,23 +41,23 @@ export const getDownloadSeperateTypeOptions = (t: TFunction) => [
     group: "Facebook",
     options: [
       {
-        label: t("download_types.facebook.post"),
+        label: `${t("download_types.facebook.post")} (Facebook)`,
         value: EDownloadSeperateType.FACEBOOK_POST
       },
       {
-        label: t("download_types.facebook.reel"),
+        label: `${t("download_types.facebook.reel")} (Facebook)`,
         value: EDownloadSeperateType.FACEBOOK_REEL
       },
       {
-        label: t("download_types.facebook.video"),
+        label: `${t("download_types.facebook.video")} (Facebook)`,
         value: EDownloadSeperateType.FACEBOOK_VIDEO
       },
       {
-        label: t("download_types.facebook.story"),
+        label: `${t("download_types.facebook.story")} (Facebook)`,
         value: EDownloadSeperateType.FACEBOOK_STORY
       },
       {
-        label: t("download_types.facebook.comment_video"),
+        label: `${t("download_types.facebook.comment_video")} (Facebook)`,
         value: EDownloadSeperateType.FACEBOOK_COMMENT_VIDEO
       }
     ]
@@ -62,15 +66,15 @@ export const getDownloadSeperateTypeOptions = (t: TFunction) => [
     group: "Instagram",
     options: [
       {
-        label: t("download_types.instagram.post"),
+        label: `${t("download_types.instagram.post")} (Instagram)`,
         value: EDownloadSeperateType.INSTAGRAM_POST
       },
       {
-        label: t("download_types.instagram.reel"),
+        label: `${t("download_types.instagram.reel")} (Instagram)`,
         value: EDownloadSeperateType.INSTAGRAM_REEL
       },
       {
-        label: t("download_types.instagram.highlight"),
+        label: `${t("download_types.instagram.highlight")} (Instagram)`,
         value: EDownloadSeperateType.INSTAGRAM_HIGHLIGHT
       }
     ]
@@ -79,7 +83,7 @@ export const getDownloadSeperateTypeOptions = (t: TFunction) => [
     group: "Threads",
     options: [
       {
-        label: t("download_types.threads.post"),
+        label: `${t("download_types.threads.post")} (Threads)`,
         value: EDownloadSeperateType.THREADS_POST
       }
     ]
@@ -88,8 +92,17 @@ export const getDownloadSeperateTypeOptions = (t: TFunction) => [
     group: "X",
     options: [
       {
-        label: t("download_types.x.post"),
+        label: `${t("download_types.x.post")} (X)`,
         value: EDownloadSeperateType.X_POST
+      }
+    ]
+  },
+  {
+    group: "Weibo",
+    options: [
+      {
+        label: `${t("download_types.weibo.post")} (Weibo)`,
+        value: EDownloadSeperateType.WEIBO_POST
       }
     ]
   }

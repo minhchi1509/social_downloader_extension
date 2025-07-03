@@ -4,7 +4,8 @@ export const APP_ROUTES = {
     FACEBOOK: "/download-all/facebook",
     INSTAGRAM: "/download-all/instagram",
     THREADS: "/download-all/threads",
-    X: "/download-all/x"
+    X: "/download-all/x",
+    WEIBO: "/download-all/weibo"
   },
   DOWNLOAD_SEPERATE: "/download-seperate",
   SETTINGS: "/settings"

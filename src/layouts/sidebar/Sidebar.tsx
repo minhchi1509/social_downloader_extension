@@ -1,4 +1,4 @@
-import { Layout, Menu, MenuProps } from "antd"
+import { Layout, Menu, MenuProps, Tag } from "antd"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Link, useLocation } from "react-router-dom"
@@ -13,6 +13,7 @@ import {
   SettingIcon,
   ThreadsIcon,
   UserIcon,
+  WeiboIcon,
   XIcon
 } from "src/assets/icons"
 import { APP_ROUTES } from "src/constants/route"
@@ -51,6 +52,20 @@ const Sidebar = () => {
           key: APP_ROUTES.DOWNLOAD_ALL.X,
           icon: <XIcon className="size-4" />,
           label: <Link to={APP_ROUTES.DOWNLOAD_ALL.X}>X</Link>
+        },
+        {
+          key: APP_ROUTES.DOWNLOAD_ALL.WEIBO,
+          icon: <WeiboIcon className="size-4" />,
+          label: (
+            <Link
+              to={APP_ROUTES.DOWNLOAD_ALL.WEIBO}
+              className="flex gap-2 items-center">
+              Weibo
+              <Tag color="cyan" className="!text-xs">
+                {t("tags.experimental")}
+              </Tag>
+            </Link>
+          )
         }
       ]
     },

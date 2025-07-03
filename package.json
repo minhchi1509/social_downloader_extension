@@ -52,11 +52,7 @@
       "declarativeNetRequest",
       "<all_urls>",
       "activeTab",
-      "scripting",
-      "tabs",
-      "storage",
-      "notifications",
-      "alarms"
+      "storage"
     ],
     "host_permissions": [
       "<all_urls>"

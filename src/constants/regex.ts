@@ -25,6 +25,8 @@ const THREADS_POST_URL_PATTERN =
 
 const X_POST_URL_PATTERN = /https:\/\/x\.com\/[^\/]+\/status\/([\w-]+)/
 
+const WEIBO_POST_URL_PATTERN = /https:\/\/weibo\.com\/\d+\/([\w]+)/
+
 export const URL_PATTERN = {
   [EDownloadSeperateType.FACEBOOK_POST]: FACEBOOK_POST_URL_PATTERN,
   [EDownloadSeperateType.FACEBOOK_STORY]: FACEBOOK_STORY_URL_PATTERN,
@@ -37,5 +39,7 @@ export const URL_PATTERN = {
 
   [EDownloadSeperateType.THREADS_POST]: THREADS_POST_URL_PATTERN,
 
-  [EDownloadSeperateType.X_POST]: X_POST_URL_PATTERN
+  [EDownloadSeperateType.X_POST]: X_POST_URL_PATTERN,
+
+  [EDownloadSeperateType.WEIBO_POST]: WEIBO_POST_URL_PATTERN
 }

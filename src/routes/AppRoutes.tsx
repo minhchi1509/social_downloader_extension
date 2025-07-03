@@ -6,6 +6,7 @@ import AccountsPage from "src/pages/accounts/AccountsPage"
 import FacebookDownloadAllPage from "src/pages/download-all/FacebookDownloadAllPage"
 import InstagramDownloadAllPage from "src/pages/download-all/InstagramDownloadAllPage"
 import ThreadsDownloadAllPage from "src/pages/download-all/ThreadsDownloadAllPage"
+import WeiboDownloadAllPage from "src/pages/download-all/WeiboDownloadAllPage"
 import XDownloadAllPage from "src/pages/download-all/XDownloadAllPage"
 import DownloadSeperatePage from "src/pages/download-seperate/DownloadSeperatePage"
 import SettingPage from "src/pages/setting/SettingPage"
@@ -33,6 +34,10 @@ const AppRoutes = () => {
         <Route
           path={APP_ROUTES.DOWNLOAD_ALL.X}
           element={<XDownloadAllPage />}
+        />
+        <Route
+          path={APP_ROUTES.DOWNLOAD_ALL.WEIBO}
+          element={<WeiboDownloadAllPage />}
         />
         <Route path={APP_ROUTES.ACCOUNTS} element={<AccountsPage />} />
         <Route

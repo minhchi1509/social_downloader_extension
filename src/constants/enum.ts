@@ -11,7 +11,8 @@ export enum ESocialProvider {
   FACEBOOK = "FACEBOOK",
   INSTAGRAM = "INSTAGRAM",
   THREADS = "THREADS",
-  X = "X"
+  X = "X",
+  WEIBO = "WEIBO"
 }
 
 export enum EDownloadSeperateType {
@@ -27,7 +28,9 @@ export enum EDownloadSeperateType {
 
   THREADS_POST = "THREADS_POST",
 
-  X_POST = "X_POST"
+  X_POST = "X_POST",
+
+  WEIBO_POST = "WEIBO_POST"
 }
 
 export enum ERemoteMessageType {
@@ -41,4 +44,11 @@ export enum ELocales {
 
 export enum ELanguageNamespaces {
   APP = "app"
+}
+
+export enum EWeiboMediaType {
+  PHOTO = "pic",
+  VIDEO = "video",
+  LIVE_PHOTO = "livephoto",
+  GIF = "gif"
 }

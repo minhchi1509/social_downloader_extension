@@ -6,6 +6,7 @@ import { IAccounts } from "src/interfaces/account.interface"
 import facebookService from "src/services/facebook.service"
 import instagramService from "src/services/instagram.service"
 import threadsService from "src/services/threads.service"
+import weiboService from "src/services/weibo.service"
 import xService from "src/services/x.service"
 import { chromeUtils } from "src/utils/chrome.util"
 
@@ -21,7 +22,8 @@ const useAuth = create<IAuthStore>((setState, getState) => ({
     [ESocialProvider.FACEBOOK]: null,
     [ESocialProvider.INSTAGRAM]: null,
     [ESocialProvider.THREADS]: null,
-    [ESocialProvider.X]: null
+    [ESocialProvider.X]: null,
+    [ESocialProvider.WEIBO]: null
   },
 
   authenticate: async <T extends ESocialProvider>(socialProvider: T) => {
@@ -29,7 +31,8 @@ const useAuth = create<IAuthStore>((setState, getState) => ({
       [ESocialProvider.INSTAGRAM]: instagramService.getInstagramAccountData,
       [ESocialProvider.THREADS]: threadsService.getThreadsAccountData,
       [ESocialProvider.FACEBOOK]: facebookService.getFacebookAccountData,
-      [ESocialProvider.X]: xService.getXAccountData
+      [ESocialProvider.X]: xService.getXAccountData,
+      [ESocialProvider.WEIBO]: weiboService.getWeiboAccountData
     }
     const accountData = await authenticateFunction[socialProvider]()
     const accountsInStorage = await chromeUtils.getStorage<IAccounts>(

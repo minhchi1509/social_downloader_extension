@@ -20,6 +20,10 @@ const xAxiosInstance = axios.create({
   baseURL: "https://x.com/i/api/graphql"
 })
 
+const weiboAxiosInstance = axios.create({
+  baseURL: "https://weibo.com/ajax/statuses"
+})
+
 threadsAxiosInstance.interceptors.request.use((config) => {
   const { accounts } = useAuth.getState()
   const igAppId = accounts[ESocialProvider.THREADS]?.igAppId
@@ -57,5 +61,6 @@ export {
   threadsAxiosInstance,
   igAxiosInstance,
   fbAxiosInstance,
-  xAxiosInstance
+  xAxiosInstance,
+  weiboAxiosInstance
 }

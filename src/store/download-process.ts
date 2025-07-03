@@ -8,6 +8,7 @@ interface IDownloadProcessState {
   [ESocialProvider.INSTAGRAM]: IDownloadProcess[ESocialProvider.INSTAGRAM][]
   [ESocialProvider.THREADS]: IDownloadProcess[ESocialProvider.THREADS][]
   [ESocialProvider.X]: IDownloadProcess[ESocialProvider.X][]
+  [ESocialProvider.WEIBO]: IDownloadProcess[ESocialProvider.WEIBO][]
 }
 
 interface IDownloadProcessStore {
@@ -32,7 +33,8 @@ const useDownloadProcesses = create<IDownloadProcessStore>((set, getState) => ({
     [ESocialProvider.FACEBOOK]: [],
     [ESocialProvider.INSTAGRAM]: [],
     [ESocialProvider.THREADS]: [],
-    [ESocialProvider.X]: []
+    [ESocialProvider.X]: [],
+    [ESocialProvider.WEIBO]: []
   },
   addProcess: (socialName, newProcess) => {
     set((state) => ({

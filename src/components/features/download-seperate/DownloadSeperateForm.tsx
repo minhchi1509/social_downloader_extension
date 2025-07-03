@@ -21,6 +21,7 @@ import {
 } from "src/utils/instagram.util"
 import { downloadThreadsPostMedia } from "src/utils/threads.util"
 import { showErrorToast, showSuccessToast } from "src/utils/toast.util"
+import { downloadWeiboPostMedia } from "src/utils/weibo.util"
 import { downloadXPostMedia } from "src/utils/x.util"
 
 const { Option, OptGroup } = Select
@@ -38,7 +39,9 @@ const downloadSeperateFunction = {
 
   [EDownloadSeperateType.THREADS_POST]: downloadThreadsPostMedia,
 
-  [EDownloadSeperateType.X_POST]: downloadXPostMedia
+  [EDownloadSeperateType.X_POST]: downloadXPostMedia,
+
+  [EDownloadSeperateType.WEIBO_POST]: downloadWeiboPostMedia
 }
 
 const DownloadSeperateForm = () => {

@@ -13,6 +13,7 @@
     "instagram_download_all": "Tải xuống hàng loạt Instagram",
     "threads_download_all": "Tải xuống hàng loạt Threads",
     "x_download_all": "Tải xuống hàng loạt X",
+    "weibo_download_all": "Tải xuống hàng loạt Weibo",
     "download_separate": "Tải xuống riêng lẻ",
     "accounts": "Quản lý tài khoản",
     "settings": "Cài đặt"
@@ -72,7 +73,8 @@
     "authenticate_instagram": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Instagram trước khi sử dụng các tính năng dưới đây!",
     "authenticate_threads": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Threads trước khi sử dụng các tính năng dưới đây!",
     "authenticate_x": "Hãy đảm bảo rằng bạn đã xác thực tài khoản X trước khi sử dụng các tính năng dưới đây!",
-    "authenticate_all": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook/Instagram/Threads/X trước khi sử dụng các tính năng tương ứng dưới đây!",
+    "authenticate_weibo": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Weibo trước khi sử dụng các tính năng dưới đây!",
+    "authenticate_all": "Hãy đảm bảo rằng bạn đã xác thực tài khoản Facebook/Instagram/Threads/X/Weibo trước khi sử dụng các tính năng tương ứng dưới đây!",
     "new_version": "🚀 Đã có phiên bản mới của Social Downloader!",
     "update_experience": "Bạn hãy vui lòng tải phiên bản mới nhất về để có những trải nghiệm tốt nhất.",
     "reaction_success": "Thả cảm xúc story thành công",
@@ -91,6 +93,10 @@
   },
   "download_types": {
     "x": {
+      "media": "Ảnh/video trên trang cá nhân",
+      "post": "Ảnh/video trên bài viết"
+    },
+    "weibo": {
       "media": "Ảnh/video trên trang cá nhân",
       "post": "Ảnh/video trên bài viết"
     },
@@ -127,5 +133,9 @@
     "title": "Ngôn ngữ",
     "english": "Tiếng Anh",
     "vietnamese": "Tiếng Việt"
+  },
+  "tags": {
+    "experimental": "Thử nghiệm",
+    "coming_soon": "Sắp ra mắt"
   }
 }

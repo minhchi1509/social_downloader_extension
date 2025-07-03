@@ -4,6 +4,7 @@ import {
   TFacebookDownloadAllType,
   TIgDownloadAllType,
   TThreadsDownloadAllType,
+  TWeiboDownloadAllType,
   TXDownloadAllType
 } from "src/interfaces/download-process.interface"
 
@@ -25,6 +26,9 @@ export interface IFacebookDownloadAllForm
 
 export interface IXDownloadAllForm
   extends IDownloadAllForm<TXDownloadAllType> {}
+
+export interface IWeiboDownloadAllForm
+  extends IDownloadAllForm<TWeiboDownloadAllType> {}
 
 export interface IDownloadSeperateForm {
   url: string

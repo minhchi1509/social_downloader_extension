@@ -13,6 +13,7 @@
     "instagram_download_all": "Download All Instagram",
     "threads_download_all": "Download All Threads",
     "x_download_all": "Download All X",
+    "weibo_download_all": "Download All Weibo",
     "download_separate": "Download Separate",
     "accounts": "Manage Accounts",
     "settings": "Settings"
@@ -72,7 +73,8 @@
     "authenticate_instagram": "Make sure you have authenticated your Instagram account before using the features below!",
     "authenticate_threads": "Make sure you have authenticated your Threads account before using the features below!",
     "authenticate_x": "Make sure you have authenticated your X account before using the features below!",
-    "authenticate_all": "Make sure you have authenticated your Facebook/Instagram/Threads/X account before using the corresponding features below!",
+    "authenticate_weibo": "Make sure you have authenticated your Weibo account before using the features below!",
+    "authenticate_all": "Make sure you have authenticated your Facebook/Instagram/Threads/X/Weibo account before using the corresponding features below!",
     "new_version": "🚀 A new version of Social Downloader is available!",
     "update_experience": "Please download the latest version for the best experience.",
     "reaction_success": "Story reaction sent successfully",
@@ -91,6 +93,10 @@
   },
   "download_types": {
     "x": {
+      "media": "Media on profile",
+      "post": "Photos/videos in posts"
+    },
+    "weibo": {
       "media": "Media on profile",
       "post": "Photos/videos in posts"
     },
@@ -127,5 +133,9 @@
     "title": "Language",
     "english": "English",
     "vietnamese": "Vietnamese"
+  },
+  "tags": {
+    "experimental": "Experimental",
+    "coming_soon": "Coming Soon"
   }
 }

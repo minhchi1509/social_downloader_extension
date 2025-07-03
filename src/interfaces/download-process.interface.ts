@@ -4,6 +4,7 @@ export type TProcessStatus = "RUNNING" | "COMPLETED" | "FAILED"
 
 export type TIgDownloadAllType = "POST" | "REEL" | "HIGHLIGHT" | "STORY"
 export type TThreadsDownloadAllType = "POST"
+export type TWeiboDownloadAllType = "MEDIA"
 export type TFacebookDownloadAllType =
   | "PHOTO"
   | "VIDEO"
@@ -25,4 +26,5 @@ export interface IDownloadProcess {
   [ESocialProvider.INSTAGRAM]: IDownloadProcessDetail<TIgDownloadAllType>
   [ESocialProvider.THREADS]: IDownloadProcessDetail<TThreadsDownloadAllType>
   [ESocialProvider.X]: IDownloadProcessDetail<TXDownloadAllType>
+  [ESocialProvider.WEIBO]: IDownloadProcessDetail<TWeiboDownloadAllType>
 }

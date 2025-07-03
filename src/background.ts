@@ -24,17 +24,69 @@ chrome.runtime.onInstalled.addListener(async () => {
         urlFilter: "https://www.facebook.com/api/graphql/*",
         resourceTypes: ["xmlhttprequest"]
       }
+    },
+    {
+      id: 2,
+      priority: 1,
+      action: {
+        type: "modifyHeaders",
+        requestHeaders: [
+          {
+            header: "Referer",
+            operation: "set",
+            value: "https://weibo.com"
+          }
+        ]
+      },
+      condition: {
+        urlFilter: "https://video.weibo.com/*",
+        resourceTypes: ["xmlhttprequest", "media"]
+      }
+    },
+    {
+      id: 3,
+      priority: 1,
+      action: {
+        type: "modifyHeaders",
+        requestHeaders: [
+          {
+            header: "Referer",
+            operation: "set",
+            value: "https://weibo.com"
+          }
+        ]
+      },
+      condition: {
+        urlFilter: "*://f.video.weibocdn.com/*",
+        resourceTypes: ["xmlhttprequest", "media"]
+      }
+    },
+    {
+      id: 4,
+      priority: 1,
+      action: {
+        type: "modifyHeaders",
+        requestHeaders: [
+          {
+            header: "Referer",
+            operation: "set",
+            value: "https://weibo.com"
+          }
+        ]
+      },
+      condition: {
+        regexFilter: "*://.*\\.sinaimg\\.cn/.*",
+        resourceTypes: ["image", "media", "xmlhttprequest"]
+      }
     }
   ]
 
   await chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [1],
+    removeRuleIds: [1, 2, 3, 4],
     addRules: rules as any
   })
 
-  console.log(
-    "Rule to remove Origin header for Facebook GraphQL API has been applied."
-  )
+  console.log("Dynamic rules have been applied.")
 })
 
 chrome.webRequest.onBeforeSendHeaders.addListener(
@@ -45,7 +97,6 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
     const xCsrfToken =
       headers.find((h) => h.name.toLowerCase() === "x-csrf-token")?.value || ""
 
-    // Lưu header mới nhất
     if (authorization && xCsrfToken) {
       xHeadersData = {
         authorization,

@@ -4,6 +4,7 @@ import {
   FacebookIcon,
   InstagramIcon,
   ThreadsIcon,
+  WeiboIcon,
   XIcon
 } from "src/assets/icons"
 import CardAccount from "src/components/features/accounts/CardAccount"
@@ -26,6 +27,10 @@ const SOCIAL_ACCOUNTS = [
   {
     socialName: ESocialProvider.X,
     icon: XIcon
+  },
+  {
+    socialName: ESocialProvider.WEIBO,
+    icon: WeiboIcon
   }
 ]
 
