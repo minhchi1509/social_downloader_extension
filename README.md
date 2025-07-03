@@ -16,6 +16,3 @@
 ## Installation
 
 - [Click here to install extension](https://chromewebstore.google.com/detail/social-downloader/cnejldbhpclimaappoekdhmeieehfdpb)
-
-> [!TIP]
-> Nếu mọi người thấy extension hữu ích, hãy ủng hộ em/mình bằng 1 sao trên repo này hoặc nếu mọi người có nhu cầu donate thì thông qua STK: 908815092002 (Techcombank) - NGUYEN MINH CHI. Em xin cảm ơn
