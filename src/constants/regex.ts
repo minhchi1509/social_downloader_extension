@@ -21,7 +21,7 @@ const INSTAGRAM_HIGHLIGHT_URL_PATTERN =
   /https:\/\/www\.instagram\.com\/stories\/highlights\/([\w-]+)/
 
 const THREADS_POST_URL_PATTERN =
-  /https:\/\/www\.threads\.net\/@[^\/]+\/post\/([\w-]+)/
+  /https:\/\/www\.threads\.com\/@[^\/]+\/post\/([\w-]+)/
 
 const X_POST_URL_PATTERN = /https:\/\/x\.com\/[^\/]+\/status\/([\w-]+)/
 
