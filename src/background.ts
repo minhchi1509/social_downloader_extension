@@ -75,7 +75,7 @@ chrome.runtime.onInstalled.addListener(async () => {
         ]
       },
       condition: {
-        regexFilter: "*://.*\\.sinaimg\\.cn/.*",
+        regexFilter: "^(http|https)://[^/]+\\.sinaimg\\.cn/.*",
         resourceTypes: ["image", "media", "xmlhttprequest"]
       }
     }
