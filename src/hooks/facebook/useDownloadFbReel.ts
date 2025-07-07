@@ -51,7 +51,7 @@ const useDownloadFbReel = () => {
             await chromeUtils.downloadFile(
               {
                 url: reel.downloadUrl,
-                filename: `facebook_downloader/profile_${userId}/reels/${downloadedItems + reelIndex}.mp4`
+                filename: `facebook_downloader/profile_${userId}/reels/${downloadedItems + reelIndex}_${reel.id}.mp4`
               },
               waitUntilCompleted
             )

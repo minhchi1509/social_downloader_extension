@@ -62,7 +62,7 @@ const Sidebar = () => {
               to={APP_ROUTES.DOWNLOAD_ALL.WEIBO}
               className="flex gap-2 items-center">
               Weibo
-              <Tag color="cyan" className="!text-xs">
+              <Tag color="cyan" className="!text-xs !mr-0">
                 {t("tags.experimental")}
               </Tag>
             </Link>
@@ -114,7 +114,6 @@ const Sidebar = () => {
       </div>
 
       <Menu
-        className="SidebarMenu"
         mode="inline"
         defaultOpenKeys={["download_all"]}
         selectedKeys={[location.pathname]}
@@ -124,6 +123,7 @@ const Sidebar = () => {
           borderRight: "none",
           paddingRight: "8px"
         }}
+        rootClassName="SidebarMenuRoot"
       />
     </Sider>
   )

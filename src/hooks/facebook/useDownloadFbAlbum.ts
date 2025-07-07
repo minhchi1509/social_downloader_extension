@@ -53,7 +53,7 @@ const useDownloadFbAlbum = () => {
             await chromeUtils.downloadFile(
               {
                 url: media.downloadUrl,
-                filename: `album_${albumId}/${downloadedItems + mediaIndex}.${media.isVideo ? "mp4" : "jpg"}`
+                filename: `album_${albumId}/${downloadedItems + mediaIndex}_${media.id}.${media.isVideo ? "mp4" : "jpg"}`
               },
               waitUntilCompleted
             )

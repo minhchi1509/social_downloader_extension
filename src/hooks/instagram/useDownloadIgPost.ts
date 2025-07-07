@@ -74,7 +74,7 @@ const useDownloadIgPost = () => {
             const mediaList = [...post.videos, ...post.images]
             await Promise.all(
               mediaList.map(async (media, mediaIndex) => {
-                const downloadPath = `instagram_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${mediaIndex + 1}.${media.downloadUrl.split(".").pop()}`
+                const downloadPath = `instagram_downloader/${username}/posts/post_${allPosts.length + postIndex}_${post.code}${isMergeIntoOneFolder ? "_" : "/"}${mediaIndex + 1}.${media.downloadUrl.split(".").pop()}`
                 await chromeUtils.downloadFile(
                   {
                     url: media.downloadUrl,

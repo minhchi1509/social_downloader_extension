@@ -143,7 +143,7 @@ const useDownloadXMedia = () => {
             await chromeUtils.downloadFile(
               {
                 url: media.downloadUrl,
-                filename: `x_downloader/${username}/media/${totalDownloadedItems + mediaIndex}.${media.isVideo ? "mp4" : "jpg"}`
+                filename: `x_downloader/${username}/media/${totalDownloadedItems + mediaIndex}_${media.id}.${media.isVideo ? "mp4" : "jpg"}`
               },
               waitUntilCompleted
             )

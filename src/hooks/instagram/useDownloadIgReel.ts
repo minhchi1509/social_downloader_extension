@@ -71,7 +71,7 @@ const useDownloadIgReel = () => {
                 url: reel.downloadUrl,
                 filename: `instagram_downloader/${username}/reels/${
                   allReels.length + reelIndex
-                }.mp4`
+                }_${reel.code}.mp4`
               },
               waitUntilCompleted
             )

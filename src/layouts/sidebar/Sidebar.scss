@@ -1,4 +1,4 @@
-.SidebarMenu {
+.SidebarMenuRoot {
   li.ant-menu-submenu.ant-menu-submenu-inline {
     div.ant-menu-submenu-title {
       height: 36px !important;
@@ -36,6 +36,15 @@
     & li.ant-menu-item {
       padding: 0px 12px !important;
       height: 40px !important;
+    }
+  }
+
+  &.ant-menu-submenu-popup {
+    ul.ant-menu.ant-menu-sub.ant-menu-vertical {
+      li.ant-menu-item {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }

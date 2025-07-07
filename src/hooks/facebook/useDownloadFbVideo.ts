@@ -55,7 +55,7 @@ const useDownloadFbVideo = () => {
             await chromeUtils.downloadFile(
               {
                 url: video.downloadUrl,
-                filename: `${downloadPath}/${downloadedItems + videoIndex}.mp4`
+                filename: `${downloadPath}/${downloadedItems + videoIndex}_${video.id}.mp4`
               },
               waitUntilCompleted
             )

@@ -78,7 +78,7 @@ const useDownloadThreadsPost = () => {
             chromeUtils.downloadFile(
               {
                 url: image.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${image.id}.jpg`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}_${post.code}${isMergeIntoOneFolder ? "_" : "/"}${image.id}.jpg`
               },
               waitUntilCompleted
             )
@@ -87,7 +87,7 @@ const useDownloadThreadsPost = () => {
             chromeUtils.downloadFile(
               {
                 url: video.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${video.id}.mp4`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}_${post.code}${isMergeIntoOneFolder ? "_" : "/"}${video.id}.mp4`
               },
               waitUntilCompleted
             )
@@ -96,7 +96,7 @@ const useDownloadThreadsPost = () => {
             chromeUtils.downloadFile(
               {
                 url: audio.downloadUrl,
-                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}${isMergeIntoOneFolder ? "_" : "/"}${audio.id}.mp3`
+                filename: `threads_downloader/${username}/posts/post_${allPosts.length + postIndex}_${post.code}${isMergeIntoOneFolder ? "_" : "/"}${audio.id}.mp3`
               },
               waitUntilCompleted
             )

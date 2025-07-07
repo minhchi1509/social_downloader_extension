@@ -1,7 +1,7 @@
 {
   "name": "social-downloader",
   "displayName": "Social Downloader",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Download Social Media with one click.",
   "author": "minhchi1509",
   "scripts": {

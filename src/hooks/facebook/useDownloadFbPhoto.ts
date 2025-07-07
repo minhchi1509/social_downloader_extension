@@ -54,7 +54,7 @@ const useDownloadFbPhoto = () => {
             await chromeUtils.downloadFile(
               {
                 url: photo.downloadUrl,
-                filename: `${downloadPath}/${downloadedItems + photoIndex}.jpg`
+                filename: `${downloadPath}/${downloadedItems + photoIndex}_${photo.id}.jpg`
               },
               waitUntilCompleted
             )
